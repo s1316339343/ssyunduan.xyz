@@ -1,0 +1,8 @@
+# 放到 /etc/caddy/Caddyfile
+# Caddy 会自动申请 HTTPS 证书，并把请求转发给本机 Spring Boot。
+# 把 yunduan.xyz 换成你自己的域名。
+
+yunduan.xyz, www.yunduan.xyz {
+	encode zstd gzip
+	reverse_proxy 127.0.0.1:8080
+}

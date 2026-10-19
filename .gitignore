@@ -1,0 +1,29 @@
+# frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.npm-cache/
+frontend/npm-debug.log*
+
+# backend
+backend/target/
+backend/data/
+backend/.mvn-home/
+backend/src/main/resources/static/
+backend/*.log
+
+# local tools / build caches
+.tools/
+.m2repo/
+shots/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+*.log
+
+# env
+.env
+.env.local

@@ -1,0 +1,18 @@
+[Unit]
+Description=Yunduan Nest personal website
+After=network.target
+
+[Service]
+Type=simple
+User=yunduan
+Group=yunduan
+WorkingDirectory=/opt/yunduan
+EnvironmentFile=/opt/yunduan/yunduan.env
+ExecStart=/usr/bin/java -Xms128m -Xmx512m -jar /opt/yunduan/yunduan-nest-1.0.0.jar
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5
+LimitNOFILE=65535
+
+[Install]
+WantedBy=multi-user.target

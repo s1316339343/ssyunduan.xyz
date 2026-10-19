@@ -1,0 +1,13 @@
+server:
+  address: 127.0.0.1
+  port: 8080
+
+spring:
+  h2:
+    console:
+      enabled: false
+
+logging:
+  level:
+    root: INFO
+    ink.yunduan.nest: INFO
