@@ -22,6 +22,7 @@ const router = createRouter({
     { path: '/changelog', name: 'changelog', component: () => import('../views/ChangelogView.vue'), meta: { title: '日志' } },
     { path: '/guestbook', name: 'guestbook', component: () => import('../views/GuestbookView.vue'), meta: { title: '留言板' } },
     { path: '/about', name: 'about', component: () => import('../views/AboutView.vue'), meta: { title: '关于我' } },
+    { path: '/visits', name: 'visits', component: () => import('../views/VisitsView.vue'), meta: { title: '访问统计' } },
     {
       path: '/admin',
       name: 'admin',

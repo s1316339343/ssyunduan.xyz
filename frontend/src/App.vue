@@ -4,6 +4,7 @@ import { api } from './api/client'
 import { loadSite } from './stores/site'
 import { detectBackend, isStaticMode, STATIC_NOTICE } from './stores/runtime'
 import { notify } from './stores/toast'
+import { startVisitorCounter } from './utils/visitorCounter'
 import SkyScene from './components/SkyScene.vue'
 import SiteHeader from './components/SiteHeader.vue'
 import SiteFooter from './components/SiteFooter.vue'
@@ -23,6 +24,7 @@ watch(isStaticMode, (staticMode) => {
 onMounted(async () => {
   await detectBackend()
   loadSite()
+  startVisitorCounter()
   if (!sessionStorage.getItem('yunduan.visit')) {
     sessionStorage.setItem('yunduan.visit', '1')
     api.trackVisit()
