@@ -1,1 +1,38 @@
-[]
+[
+  {
+    "id": 1,
+    "name": "宋爽的csdn",
+    "url": "https://blog.csdn.net/s1316339343?spm=1000.2115.3001.5343",
+    "description": "",
+    "avatar": "cloud",
+    "art": "cloud",
+    "date": "2026-10-19"
+  },
+  {
+    "id": 2,
+    "name": "河北工业职业技术大学",
+    "url": "https://www.hbcit.edu.cn/",
+    "description": "我的专科学校",
+    "avatar": "cloud",
+    "art": "cloud",
+    "date": "2026-10-19"
+  },
+  {
+    "id": 3,
+    "name": "沧州交通学院",
+    "url": "https://www.czjtu.edu.cn/",
+    "description": "我的本科学校",
+    "avatar": "cloud",
+    "art": "cloud",
+    "date": "2026-10-19"
+  },
+  {
+    "id": 4,
+    "name": "付文龙老师",
+    "url": "https://laoshifu.blog.csdn.net/?type=blog",
+    "description": "鸣谢·在我专科期间给我不少帮助的付文龙老师",
+    "avatar": "cloud",
+    "art": "cloud",
+    "date": "2026-10-19"
+  }
+]
