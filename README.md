@@ -488,8 +488,16 @@ GitHub Pages 只能托管静态文件，不能运行 Spring Boot。项目内置�
 
 3. 脚本会导出 `frontend/public/data` 和照片，并生成静态页面；
 4. 把项目推到 GitHub；
-5. 仓库 **Settings → Pages → Build and deployment → GitHub Actions**；
-6. 等待 Actions 完成，访问 Pages 地址。
+5. 推送后，GitHub Actions 会自动构建并更新 `gh-pages` 分支；
+6. 仓库 **Settings → Pages → Build and deployment** 选择：
+
+   ```text
+   Deploy from a branch → gh-pages → / (root)
+   ```
+
+7. 等待 Pages 构建完成，访问 Pages 地址。
+
+> 当前 `s1316339343/ssyunduan.xyz` 仓库已经按这种方式发布，不需要再改 Pages 设置。
 
 GitHub Actions 文件：
 
