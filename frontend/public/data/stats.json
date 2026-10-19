@@ -1,8 +1,8 @@
 {
-  "articles": 0,
-  "tags": 0,
-  "categories": 0,
-  "words": 0,
+  "articles": 1,
+  "tags": 5,
+  "categories": 1,
+  "words": 4565,
   "todayVisits": 0,
   "monthVisits": 0,
   "totalVisits": 0,
@@ -200,7 +200,7 @@
     },
     {
       "month": "26/10",
-      "count": 0
+      "count": 1
     }
   ]
 }
