@@ -1,1 +1,11 @@
-[]
+[
+  {
+    "id": 1,
+    "title": "是有点帅在里面的",
+    "category": "自己",
+    "location": "沧州交通学院",
+    "takenAt": "2026-10-19",
+    "art": "mountain",
+    "imageUrl": "/uploads/7fdb801e82e0475b994ea9ae7362bb64.jpg"
+  }
+]
