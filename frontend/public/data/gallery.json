@@ -1,5 +1,14 @@
 [
   {
+    "id": 2,
+    "title": "天冷了，秋来了",
+    "category": "风景",
+    "location": "沧州交通学院",
+    "takenAt": "2026-10-20",
+    "art": "mountain",
+    "imageUrl": "/uploads/1b6c78de609b44719a180b5274edc9d3.jpg"
+  },
+  {
     "id": 1,
     "title": "是有点帅在里面的",
     "category": "自己",
