@@ -1,14 +1,14 @@
 {
-  "articles": 2,
-  "tags": 9,
-  "categories": 2,
-  "words": 8760,
-  "todayVisits": 1,
-  "monthVisits": 3,
-  "totalVisits": 3,
-  "todayViews": 1,
-  "monthViews": 3,
-  "totalViews": 3,
+  "articles": 4,
+  "tags": 18,
+  "categories": 3,
+  "words": 10865,
+  "todayVisits": 2,
+  "monthVisits": 4,
+  "totalVisits": 4,
+  "todayViews": 2,
+  "monthViews": 4,
+  "totalViews": 4,
   "visitTrend": [
     {
       "date": "2026-09-21",
@@ -157,8 +157,8 @@
     },
     {
       "date": "2026-10-20",
-      "pv": 1,
-      "uv": 1
+      "pv": 2,
+      "uv": 2
     }
   ],
   "monthlyArticles": [
@@ -200,7 +200,7 @@
     },
     {
       "month": "26/10",
-      "count": 2
+      "count": 4
     }
   ]
 }
