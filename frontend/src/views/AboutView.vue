@@ -100,7 +100,7 @@ onMounted(async () => {
     <div class="container">
       <PageHeader
         eyebrow="ABOUT ME"
-        title="宋爽 / 云端"
+        title="关于我"
         subtitle="在代码、文字与人工智能之间，慢慢把想法做成可以运行的东西。"
       />
 
