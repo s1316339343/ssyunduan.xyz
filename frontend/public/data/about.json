@@ -24,53 +24,23 @@
   },
   "honors": [
     {
-      "id": 1,
-      "title": "华为开发者学堂专业证书",
-      "issuer": "华为开发者联盟",
-      "awardedAt": "2024-02-27",
-      "imageUrl": "/honors/huawei.jpg",
-      "description": "HarmonyOS 应用开发者基础认证。",
-      "priority": 100,
-      "visible": true
-    },
-    {
-      "id": 2,
-      "title": "阿里云 Apsara Clouder 专项技能认证",
-      "issuer": "阿里云",
-      "awardedAt": "2024-06-17",
-      "imageUrl": "/honors/aliyun.jpg",
-      "description": "云数据库 Clouder 认证：云数据库 RDS 快速入门。",
-      "priority": 90,
-      "visible": true
-    },
-    {
-      "id": 3,
-      "title": "AI 驱动的 TDSQL-C Serverless 数据库技术实战营结业证书",
-      "issuer": "腾讯云开发者社区 / 腾讯云数据库 / CSDN",
-      "awardedAt": "2026-10",
-      "imageUrl": "/honors/tdsql.jpg",
-      "description": "完成 AI 驱动的 TDSQL-C Serverless 数据库技术实战营。",
-      "priority": 80,
-      "visible": true
-    },
-    {
       "id": 4,
       "title": "第 16 届蓝桥杯 Web 应用开发河北省赛二等奖",
       "issuer": "工业和信息化部人才交流中心 / 蓝桥杯大赛组委会",
       "awardedAt": "2025-05-26",
       "imageUrl": "/honors/lanqiao.jpg",
       "description": "全国软件和信息技术专业人才大赛河北赛区 Web 应用开发职业院校组二等奖。",
-      "priority": 70,
+      "priority": 100,
       "visible": true
     },
     {
       "id": 5,
       "title": "2024 年百度商业 AI 技术创新大赛北部赛区二等奖",
       "issuer": "中国人工智能学会 / 百度商业 / NVIDIA / 飞桨",
-      "awardedAt": "2024-08",
+      "awardedAt": "2024-08-29",
       "imageUrl": "/honors/baidu.jpg",
       "description": "行业智能体搭建赛道，所在团队「慢走不宋先生队」获北部赛区二等奖。",
-      "priority": 60,
+      "priority": 90,
       "visible": true
     },
     {
@@ -81,6 +51,36 @@
       "imageUrl": "",
       "description": "DeepSeek 挑战赛一等奖（暂无证书图片）。",
       "priority": 50,
+      "visible": true
+    },
+    {
+      "id": 1,
+      "title": "华为开发者学堂专业证书",
+      "issuer": "华为开发者联盟",
+      "awardedAt": "2024-02-27",
+      "imageUrl": "/honors/huawei.jpg",
+      "description": "HarmonyOS 应用开发者基础认证。",
+      "priority": 10,
+      "visible": true
+    },
+    {
+      "id": 2,
+      "title": "阿里云 Apsara Clouder 专项技能认证",
+      "issuer": "阿里云",
+      "awardedAt": "2024-06-17",
+      "imageUrl": "/honors/aliyun.jpg",
+      "description": "云数据库 Clouder 认证：云数据库 RDS 快速入门。",
+      "priority": 10,
+      "visible": true
+    },
+    {
+      "id": 3,
+      "title": "AI 驱动的 TDSQL-C Serverless 数据库技术实战营结业证书",
+      "issuer": "腾讯云开发者社区 / 腾讯云数据库 / CSDN",
+      "awardedAt": "2024-02-27",
+      "imageUrl": "/honors/tdsql.jpg",
+      "description": "完成 AI 驱动的 TDSQL-C Serverless 数据库技术实战营。",
+      "priority": 10,
       "visible": true
     }
   ]
