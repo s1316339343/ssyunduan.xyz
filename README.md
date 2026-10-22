@@ -4,9 +4,9 @@
 
 现在这套项目已经改成 **站长内容管理系统**：
 
-- `yunduan` 账号：可以发布 / 编辑 / 删除文章、随笔、友链、相册、更新日志，也可以删除留言、修改密码。
+- `yunduan` 账号：可以发布 / 编辑 / 删除文章、随笔、友链、相册，也可以编辑“关于我”和荣誉证书、查看访问统计、删除留言、修改密码。
 - 其他注册用户：只能浏览、登录、留言，**看不到管理入口**，后端也会拒绝他们的管理请求。
-- 初始数据库是空的：没有演示文章、留言、相册、友链，只保留一个站长账号。
+- 首次启动会初始化站长账号、关于我简历和六项荣誉；文章、留言、相册、友链仍然为空。
 
 > 页面里的天空、池塘、黑猫、画架、油纸伞、头像和所有封面，都是原创 SVG / CSS；没有复制参考站点的图片、头像或文章。
 
@@ -30,7 +30,7 @@
 | 注册 / 登录 | ✅ | ✅ | ✅ |
 | 发表留言 | ✅（匿名或登录） | ✅ | ✅ |
 | 发布 / 编辑 / 删除文章 | ❌ | ❌ | ✅ |
-| 编辑随笔、友链、相册、日志 | ❌ | ❌ | ✅ |
+| 编辑随笔、友链、相册、关于我、荣誉 | ❌ | ❌ | ✅ |
 | 删除留言 | ❌ | ❌ | ✅ |
 | 修改站长密码 | ❌ | ❌ | ✅ |
 
@@ -163,7 +163,7 @@ backend/data/uploads/
 - 站长账号 `yunduan`
 - 空数据库
 
-不会创建任何文章、随笔、友链、相册、日志、留言或访问数据。
+不会创建任何文章、随笔、友链、相册、留言或访问数据；只初始化站长账号、关于我简历和荣誉证书。
 
 如果想再次清空所有内容（包括自己写的文章、注册用户、留言、访问记录）：
 
@@ -386,7 +386,7 @@ yunduan-nest/
 | GET | `/api/moments` | 随笔 |
 | GET | `/api/gallery` | 相册 |
 | GET | `/api/friends` | 友链 |
-| GET | `/api/changelog` | 更新日志 |
+| GET | `/api/about` | 关于我简历与展示中的荣誉 |
 | GET | `/api/messages` | 留言 |
 | POST | `/api/messages` | 留言（登录可选） |
 | GET | `/api/stats` | 统计 |
@@ -406,8 +406,9 @@ yunduan-nest/
 | GET/POST/PUT/DELETE | `/api/admin/moments...` | 随笔管理 |
 | GET/POST/PUT/DELETE | `/api/admin/friends...` | 友链管理 |
 | GET/POST/PUT/DELETE | `/api/admin/photos...` | 相册管理 |
-| POST | `/api/admin/uploads` | 上传相册图片（multipart，字段名 `file`） |
-| GET/POST/PUT/DELETE | `/api/admin/changelog...` | 更新日志管理 |
+| POST | `/api/admin/uploads` | 上传相册或荣誉图片（multipart，字段名 `file`） |
+| GET/PUT | `/api/admin/about` | 读取 / 保存关于我资料 |
+| POST/PUT/DELETE | `/api/admin/about/honors...` | 荣誉证书管理（排序、展示、图片） |
 | DELETE | `/api/admin/messages/{id}` | 删除留言 |
 | PUT | `/api/admin/password` | 修改站长密码 |
 
@@ -465,7 +466,7 @@ Spring Boot JAR（页面 + API + H2）
 GitHub Pages 只能托管静态文件，不能运行 Spring Boot。项目内置了“静态展示模式”：
 
 - 页面检测不到 `/api/site` 时，自动读取 `frontend/public/data/*.json`；
-- 文章、相册、友链、日志、留言和统计显示导出的快照；
+- 文章、相册、友链、关于我、荣誉、留言和统计显示导出的快照；
 - 登录、注册、留言、上传和后台管理会提示：
 
   ```text
@@ -584,7 +585,7 @@ GitHub Actions 文件：
 - 管理后台：`frontend/src/views/AdminView.vue`
 - 权限逻辑：`backend/.../service/AuthService.java`、`backend/.../web/AdminController.java`
 
-文章、随笔、友链、相册、日志、留言现在都通过后台管理，不需要再改 `DataSeeder.java`。
+文章、随笔、友链、相册、关于我、荣誉、留言现在都通过后台管理，不需要再改 `DataSeeder.java`。
 
 ---
 
