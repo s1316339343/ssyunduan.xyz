@@ -188,8 +188,16 @@ onMounted(async () => {
 
         <div v-if="honors.length" class="honor-grid">
           <article v-for="honor in honors" :key="honor.id" class="honor-card glass-card">
-            <a v-if="honor.imageUrl" :href="assetUrl(honor.imageUrl)" target="_blank" rel="noreferrer noopener" class="honor-image">
+            <a
+              v-if="honor.imageUrl"
+              :href="assetUrl(honor.imageUrl)"
+              target="_blank"
+              rel="noreferrer noopener"
+              class="honor-image"
+              :aria-label="`查看${honor.title}证书大图`"
+            >
               <img :src="assetUrl(honor.imageUrl)" :alt="honor.title" loading="lazy" />
+              <span class="honor-image-hint">点击查看大图</span>
             </a>
             <div v-else class="honor-image honor-placeholder">
               <Award :size="38" />
@@ -378,6 +386,7 @@ onMounted(async () => {
 }
 
 .section-head {
+  display: block;
   margin-bottom: 12px;
 }
 
@@ -478,9 +487,33 @@ onMounted(async () => {
 
 .honor-image {
   display: block;
+  position: relative;
+  overflow: hidden;
   height: 230px;
   background: #f3fafc;
   border-bottom: 1px solid rgba(208, 236, 241, 0.8);
+}
+
+.honor-image-hint {
+  position: absolute;
+  right: 10px;
+  bottom: 9px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: rgba(21, 86, 100, 0.72);
+  color: #fff;
+  font-size: 9px;
+  letter-spacing: 0.5px;
+  opacity: 0;
+  transform: translateY(3px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.honor-image:hover .honor-image-hint,
+.honor-image:focus-visible .honor-image-hint {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .honor-image img {
@@ -577,31 +610,177 @@ onMounted(async () => {
 @media (max-width: 760px) {
   .about-hero {
     flex-direction: column;
-    align-items: flex-start;
-    padding: 22px;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 18px;
   }
-  .about-grid,
-  .honor-grid {
+  .hero-avatar {
+    align-self: center;
+  }
+  .hero-copy {
+    width: 100%;
+  }
+  .hero-kicker {
+    letter-spacing: 2px;
+    font-size: 9px;
+  }
+  .hero-status {
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+  .hero-intro {
+    margin-bottom: 14px;
+    font-size: 13.5px;
+    line-height: 1.85;
+  }
+  .hero-meta {
+    gap: 6px 12px;
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
+  .hero-chips {
+    margin-top: 10px;
+  }
+  .hero-chips span,
+  .tag-list span,
+  .course-tags span {
+    padding: 5px 10px;
+    font-size: 10.5px;
+  }
+  .about-grid {
+    gap: 12px;
     grid-template-columns: 1fr;
+  }
+  .info-card {
+    padding: 18px;
+  }
+  .info-card h2 {
+    font-size: 18px;
+  }
+  .info-card p {
+    font-size: 13px;
+    line-height: 1.85;
+  }
+  .muted-line {
+    font-size: 11.5px !important;
+  }
+  .section-block {
+    margin-top: 24px;
+  }
+  .section-head h2 {
+    font-size: 21px;
+  }
+  .section-desc {
+    font-size: 11.5px;
+    line-height: 1.7;
+  }
+  .timeline {
+    gap: 10px;
+    padding-left: 16px;
+  }
+  .timeline-item {
+    padding: 16px;
+  }
+  .timeline-dot {
+    left: -17px;
+    top: 21px;
+  }
+  .timeline-head h3 {
+    font-size: 17px;
+  }
+  .timeline-head p {
+    font-size: 12.5px;
+  }
+  .timeline-head > span {
+    font-size: 11px;
+  }
+  .timeline-text {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  .honor-grid {
+    gap: 12px;
+    grid-template-columns: 1fr;
+  }
+  .honor-image {
+    height: 280px;
+  }
+  .honor-image-hint {
+    right: 8px;
+    bottom: 8px;
+    opacity: 1;
+    transform: none;
+    font-size: 9.5px;
+  }
+  .honor-copy {
+    padding: 14px 15px 16px;
+  }
+  .honor-date {
+    font-size: 10px;
+  }
+  .honor-copy h3 {
+    font-size: 15.5px;
+    line-height: 1.55;
+  }
+  .honor-issuer {
+    font-size: 11.5px;
+    line-height: 1.65;
+  }
+  .honor-desc {
+    font-size: 11.5px;
+    line-height: 1.75;
   }
   .contact-card {
     flex-direction: column;
+    gap: 16px;
+    padding: 20px;
   }
-  .honor-image {
-    height: 240px;
+  .contact-card h2 {
+    font-size: 19px;
+    line-height: 1.5;
+  }
+  .contact-card p:not(.eyebrow) {
+    font-size: 12.5px;
+    line-height: 1.85;
+  }
+  .contact-list {
+    gap: 8px;
+    font-size: 12.5px;
+  }
+  :global(.float-tools) {
+    display: none !important;
   }
 }
 
 @media (max-width: 480px) {
+  .about-hero {
+    gap: 14px;
+    padding: 16px 15px;
+  }
   .hero-copy h1 {
     font-size: 28px;
+  }
+  .hero-intro {
+    font-size: 13px;
   }
   .timeline-head {
     flex-direction: column;
     gap: 3px;
   }
   .honor-image {
-    height: 205px;
+    height: 260px;
+  }
+  .contact-card {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 380px) {
+  .honor-image {
+    height: 245px;
+  }
+  .hero-meta {
+    font-size: 10px;
   }
 }
 </style>
