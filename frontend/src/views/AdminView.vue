@@ -1127,7 +1127,7 @@ onMounted(() => {
               <iframe :src="VISITS_WIDGET_URL" title="访问统计" loading="lazy"></iframe>
             </div>
             <p class="visits-embed-hint">
-              只统计公网 Pages 的访问，不包含 localhost；数据来自 Busuanzi，只能看总量，无法知道具体是谁。
+              只统计公网 Pages 的访问，不包含 localhost；数据来自 Abacus，只能看总量，无法知道具体是谁。
             </p>
           </section>
 

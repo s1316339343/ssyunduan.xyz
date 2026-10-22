@@ -1,5 +1,7 @@
-const SCRIPT_ID = 'busuanzi-counter-script'
-const HOLDER_ID = 'busuanzi-counter-holder'
+const COUNTER_NAMESPACE = 'ssyunduan-xyz'
+const PV_KEY = 'site-pv'
+const UV_KEY = 'site-uv'
+const SEEN_KEY = 'yunduan.visitor.seen'
 
 let started = false
 
@@ -13,36 +15,56 @@ function isPublicHost(): boolean {
   return true
 }
 
+function jsonp(url: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    const callbackName = `__yunduan_counter_${Date.now()}_${Math.floor(Math.random() * 100000)}`
+    const script = document.createElement('script')
+    const timer = window.setTimeout(() => {
+      cleanup()
+      reject(new Error('counter timeout'))
+    }, 8000)
+
+    function cleanup() {
+      window.clearTimeout(timer)
+      delete (window as unknown as Record<string, unknown>)[callbackName]
+      script.remove()
+    }
+
+    ;(window as unknown as Record<string, unknown>)[callbackName] = (data: { value?: number }) => {
+      cleanup()
+      resolve(Number(data?.value) || 0)
+    }
+    script.src = `${url}${url.includes('?') ? '&' : '?'}callback=${callbackName}`
+    script.async = true
+    script.onerror = () => {
+      cleanup()
+      reject(new Error('counter failed'))
+    }
+    document.head.appendChild(script)
+  })
+}
+
+function hit(key: string): Promise<number> {
+  return jsonp(`https://abacus.jasoncameron.dev/hit/${COUNTER_NAMESPACE}/${key}`)
+}
+
 export function startVisitorCounter(): void {
   if (started || !isPublicHost()) return
   started = true
 
-  if (!document.getElementById(HOLDER_ID)) {
-    const holder = document.createElement('div')
-    holder.id = HOLDER_ID
-    holder.style.display = 'none'
-    holder.innerHTML = [
-      '<span id="busuanzi_container_site_pv"><span id="busuanzi_value_site_pv">-</span></span>',
-      '<span id="busuanzi_container_site_uv"><span id="busuanzi_value_site_uv">-</span></span>',
-    ].join('')
-    document.body.appendChild(holder)
-  }
+  // 每次打开公网页面记一次浏览。
+  hit(PV_KEY).catch(() => undefined)
 
-  if (!document.getElementById(SCRIPT_ID)) {
-    const script = document.createElement('script')
-    script.id = SCRIPT_ID
-    script.async = true
-    script.src = 'https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js'
-    script.referrerPolicy = 'no-referrer-when-downgrade'
-    document.head.appendChild(script)
+  // 同一个浏览器只记一次独立访客，之后靠 localStorage 去重。
+  try {
+    if (!localStorage.getItem(SEEN_KEY)) {
+      hit(UV_KEY)
+        .then(() => localStorage.setItem(SEEN_KEY, '1'))
+        .catch(() => undefined)
+    }
+  } catch {
+    /* 隐私模式禁用 localStorage 时只统计 PV */
   }
-}
-
-export function readVisitorCounts(): { pv: string; uv: string; ready: boolean } {
-  const pv = document.getElementById('busuanzi_value_site_pv')?.textContent?.trim() || ''
-  const uv = document.getElementById('busuanzi_value_site_uv')?.textContent?.trim() || ''
-  const ready = Boolean(pv && uv && pv !== '-' && uv !== '-')
-  return { pv: ready ? pv : '—', uv: ready ? uv : '—', ready }
 }
 
 export function visitorCounterEnabled(): boolean {

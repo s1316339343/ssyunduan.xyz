@@ -81,20 +81,51 @@
       <p class="sub">看看有没有人来过这个小窝。</p>
       <div class="grid">
         <div class="stat">
-          <strong id="busuanzi_value_site_pv">—</strong>
+          <strong id="site_pv">—</strong>
           <span>本站总访问</span>
           <small>每次打开页面计一次</small>
         </div>
         <div class="stat">
-          <strong id="busuanzi_value_site_uv">—</strong>
+          <strong id="site_uv">—</strong>
           <span>独立访客</span>
           <small>按浏览器粗略去重</small>
         </div>
       </div>
       <p class="note">
-        数据来自 Busuanzi 免费计数器，仅作趋势参考。只统计公网页面，不包含 localhost 和局域网 IP；无法识别具体访客。
+        数据来自 Abacus 免费计数器，仅作趋势参考。只统计公网页面，不包含 localhost 和局域网 IP；无法识别具体访客。
       </p>
     </main>
-    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <script>
+      ;(function () {
+        var namespace = 'ssyunduan-xyz'
+        var seq = 0
+        function load(key, target) {
+          var callback = '__yunduan_widget_' + Date.now() + '_' + (++seq)
+          var script = document.createElement('script')
+          var timer = setTimeout(function () {
+            cleanup()
+            target.textContent = '—'
+          }, 8000)
+          function cleanup() {
+            clearTimeout(timer)
+            delete window[callback]
+            if (script.parentNode) script.parentNode.removeChild(script)
+          }
+          window[callback] = function (data) {
+            cleanup()
+            target.textContent = data && data.value != null ? String(data.value) : '—'
+          }
+          script.onerror = function () {
+            cleanup()
+            target.textContent = '—'
+          }
+          script.src = 'https://abacus.jasoncameron.dev/get/' + namespace + '/' + key + '?callback=' + callback
+          script.async = true
+          document.head.appendChild(script)
+        }
+        load('site-pv', document.getElementById('site_pv'))
+        load('site-uv', document.getElementById('site_uv'))
+      })()
+    </script>
   </body>
 </html>
