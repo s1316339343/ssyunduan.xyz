@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, watch } from 'vue'
+import { onMounted, onUnmounted, watch } from 'vue'
 import { api } from './api/client'
-import { restoreSession } from './stores/auth'
+import { logout, restoreSession } from './stores/auth'
 import { loadSite } from './stores/site'
 import { detectBackend, isStaticMode, STATIC_NOTICE } from './stores/runtime'
 import { notify } from './stores/toast'
@@ -22,7 +22,12 @@ watch(isStaticMode, (staticMode) => {
   }
 })
 
+function onUnauthorized() {
+  logout()
+}
+
 onMounted(async () => {
+  window.addEventListener('yunduan:unauthorized', onUnauthorized)
   await restoreSession()
   await detectBackend()
   loadSite()
@@ -31,6 +36,10 @@ onMounted(async () => {
     sessionStorage.setItem('yunduan.visit', '1')
     api.trackVisit()
   }
+})
+
+onUnmounted(() => {
+  window.removeEventListener('yunduan:unauthorized', onUnauthorized)
 })
 </script>
 

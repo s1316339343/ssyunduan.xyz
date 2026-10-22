@@ -62,6 +62,9 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   }
 
   if (!res.ok) {
+    if (res.status === 401) {
+      window.dispatchEvent(new Event('yunduan:unauthorized'))
+    }
     let message = `请求失败（${res.status}）`
     try {
       const data = await res.json()
