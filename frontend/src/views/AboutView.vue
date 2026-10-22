@@ -1,59 +1,96 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import {
-  ArrowUpRight,
+  Award,
   BookOpen,
   Code2,
-  Coffee,
-  Github,
+  GraduationCap,
   Heart,
   Mail,
   MapPin,
-  MessageCircle,
-  Mountain,
+  Phone,
   Sparkles,
+  Target,
 } from 'lucide-vue-next'
+import PageHeader from '../components/PageHeader.vue'
 import AvatarArt from '../components/AvatarArt.vue'
 import { api } from '../api/client'
 import { siteState } from '../stores/site'
-import type { Stats } from '../types'
-import { formatDate, formatNumber } from '../utils/format'
+import type { AboutData, AboutProfile, Honor } from '../types'
+import { formatDate } from '../utils/format'
 
+const fallbackProfile: AboutProfile = {
+  name: '宋爽',
+  nickname: '云端',
+  birthDate: '2003-10-14',
+  hometown: '河北唐山',
+  phone: '18731513039',
+  email: '1316339343@qq.com',
+  status: '沧州交通学院 · 物联网工程 · 本科在读',
+  intro:
+    '本人为沧州交通学院物联网工程专业本科在读生，具备专升本学习背景，学习目标清晰、执行力强，长期规划以人工智能方向深造为核心，对智能体、大模型上层应用领域抱有浓厚热情。在校期间主动夯实计算机基础，备考计算机二级、四级以及 408 相关课程；积极参与学科竞赛，曾获蓝桥杯省赛二等奖，同时自主开展项目实践，先后独立开发鸿蒙美食推荐应用、校园论坛、个人静态博客，尝试本地大模型部署，擅长结合 AI 能力落地实用应用，偏向智能应用开发。',
+  goal: '深耕人工智能与智能体应用，把想法持续转化为可运行的产品。',
+  collegeSchool: '河北工业职业技术大学',
+  collegeMajor: '移动应用开发',
+  collegePeriod: '2023.09 - 2026.06',
+  collegeCourses: 'Vue、HTML、CSS、JavaScript、Web 前端开发、小程序开发',
+  collegeExperience: '参加校园内部前端实战班，重点学习前端知识，提升项目实战经验；在班级里学习成绩优异，实训项目完成度优秀。',
+  bachelorSchool: '沧州交通学院',
+  bachelorMajor: '物联网工程',
+  bachelorPeriod: '2026.09 - 至今',
+  bachelorCourses: '主修课程与校内经历暂无',
+  bachelorExperience: '本科在读，正在继续补充物联网工程与人工智能相关基础。',
+  skills: 'Vue 3、TypeScript、Spring Boot、鸿蒙应用开发、AI 应用实践、项目复盘',
+}
+
+const fallbackHonors: Honor[] = [
+  { id: 1, title: '华为开发者学堂专业证书', issuer: '华为开发者联盟', awardedAt: '2024-02-27', imageUrl: '/honors/huawei.jpg', description: 'HarmonyOS 应用开发者基础认证。', priority: 100, visible: true },
+  { id: 2, title: '阿里云 Apsara Clouder 专项技能认证', issuer: '阿里云', awardedAt: '2024-06-17', imageUrl: '/honors/aliyun.jpg', description: '云数据库 Clouder 认证：云数据库 RDS 快速入门。', priority: 90, visible: true },
+  { id: 3, title: 'AI 驱动的 TDSQL-C Serverless 数据库技术实战营结业证书', issuer: '腾讯云开发者社区 / 腾讯云数据库 / CSDN', awardedAt: '2026-10', imageUrl: '/honors/tdsql.jpg', description: '完成 AI 驱动的 TDSQL-C Serverless 数据库技术实战营。', priority: 80, visible: true },
+  { id: 4, title: '第 16 届蓝桥杯 Web 应用开发河北省赛二等奖', issuer: '工业和信息化部人才交流中心 / 蓝桥杯大赛组委会', awardedAt: '2025-05-26', imageUrl: '/honors/lanqiao.jpg', description: '全国软件和信息技术专业人才大赛河北赛区 Web 应用开发职业院校组二等奖。', priority: 70, visible: true },
+  { id: 5, title: '2024 年百度商业 AI 技术创新大赛北部赛区二等奖', issuer: '中国人工智能学会 / 百度商业 / NVIDIA / 飞桨', awardedAt: '2024-08', imageUrl: '/honors/baidu.jpg', description: '行业智能体搭建赛道，所在团队「慢走不宋先生队」获北部赛区二等奖。', priority: 60, visible: true },
+  { id: 6, title: '文心智能体 DeepSeek 挑战赛一等奖', issuer: '文心智能体', awardedAt: '2025', imageUrl: null, description: 'DeepSeek 挑战赛一等奖（暂无证书图片）。', priority: 50, visible: true },
+]
+
+const about = ref<AboutData>({ profile: fallbackProfile, honors: fallbackHonors })
 const site = computed(() => siteState.data)
-const stats = ref<Stats | null>(null)
+const profile = computed(() => about.value.profile || fallbackProfile)
+const honors = computed(() =>
+  [...(about.value.honors?.length ? about.value.honors : fallbackHonors)]
+    .filter((honor) => honor.visible)
+    .sort((a, b) => b.priority - a.priority || a.id - b.id),
+)
+const skillList = computed(() =>
+  (profile.value.skills || '')
+    .split(/[、,，]/)
+    .map((item) => item.trim())
+    .filter(Boolean),
+)
+const courses = computed(() =>
+  (profile.value.collegeCourses || '')
+    .split(/[、,，]/)
+    .map((item) => item.trim())
+    .filter(Boolean),
+)
 
-const floating = [
-  { text: '写代码', class: 'n1', color: 'mint' },
-  { text: '拍云', class: 'n2', color: 'blue' },
-  { text: '读闲书', class: 'n3', color: 'butter' },
-  { text: '咖啡续命', class: 'n4', color: 'pink' },
-  { text: '慢慢来', class: 'n5', color: 'violet' },
-  { text: '正在学习', class: 'n6', color: 'mint' },
-]
+const BASE = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`
 
-const visitItems = computed(() => [
-  { label: '今日访客', value: stats.value?.todayVisits ?? 0 },
-  { label: '今日浏览', value: stats.value?.todayViews ?? 0 },
-  { label: '昨日访客', value: Math.max(0, (stats.value?.monthVisits ?? 0) - (stats.value?.todayVisits ?? 0)) },
-  { label: '本月浏览', value: stats.value?.monthViews ?? 0 },
-  { label: '总访客', value: stats.value?.totalVisits ?? 0 },
-  { label: '总浏览', value: stats.value?.totalViews ?? 0 },
-])
+function assetUrl(url: string | null | undefined): string {
+  if (!url) return ''
+  if (/^https?:\/\//.test(url)) return url
+  return `${BASE}${url.replace(/^\//, '')}`
+}
 
-const traits = [
-  { label: '身份', value: '开发者 / 写作者' },
-  { label: '方向', value: 'Web 前端 & 后端' },
-  { label: '坐标', value: site.value.location },
-  { label: '状态', value: '持续学习中' },
-  { label: '爱好', value: '摄影 · 阅读 · 发呆' },
-  { label: '信条', value: '慢慢来，比较快' },
-]
+function honorsDate(value: string): string {
+  if (!value) return ''
+  return value.includes('-') ? formatDate(value) : value
+}
 
 onMounted(async () => {
   try {
-    stats.value = await api.stats()
+    about.value = await api.about()
   } catch {
-    /* 页面其余部分仍可浏览 */
+    /* 保留简历兜底，页面仍可浏览 */
   }
 })
 </script>
@@ -61,146 +98,125 @@ onMounted(async () => {
 <template>
   <div class="page about-page">
     <div class="container">
-      <section class="about-hero">
-        <span
-          v-for="item in floating"
-          :key="item.class"
-          class="float-note"
-          :class="[item.class, item.color]"
-        >
-          {{ item.text }}
-        </span>
+      <PageHeader
+        eyebrow="ABOUT ME"
+        title="宋爽 / 云端"
+        subtitle="在代码、文字与人工智能之间，慢慢把想法做成可以运行的东西。"
+      />
 
+      <section class="about-hero glass-card">
         <div class="hero-avatar">
-          <span class="avatar-ring r1"></span>
-          <span class="avatar-ring r2"></span>
-          <AvatarArt :size="158" />
-          <span class="avatar-badge"><Sparkles :size="12" /> 云端</span>
+          <AvatarArt :size="132" />
+          <span class="avatar-badge"><Sparkles :size="11" /> 云端</span>
         </div>
-
-        <p class="eyebrow">ABOUT ME</p>
-        <h1>你好，我是宋爽，<br />也是「云端」。</h1>
-        <p class="hero-desc">
-          一个在代码与文字之间来回散步的人。喜欢把复杂的事情拆小，<br class="hide-mobile" />
-          也喜欢把普通的日子，过得稍微认真一点。
-        </p>
-        <div class="hero-chips">
-          <span><Code2 :size="12" /> Vue 3 / Spring Boot</span>
-          <span><Mountain :size="12" /> 山野与云</span>
-          <span><Coffee :size="12" /> 咖啡与长夜</span>
-        </div>
-      </section>
-
-      <section class="intro-grid">
-        <div class="name-card">
-          <div class="name-card-top">
-            <span class="name-tag">网名</span>
-            <span class="name-spark">✦</span>
-          </div>
-          <h2>{{ site.nickname }}<span> / {{ site.author }}</span></h2>
-          <p class="name-line">有了想做的事，就慢慢去做。</p>
-          <p class="name-bio">
-            我是宋爽，网名云端。这里是我的个人小站，记录技术、生活，以及那些不值得发朋友圈、却又舍不得忘记的小事。
-          </p>
-          <div class="name-meta">
-            <span><MapPin :size="12" /> {{ site.location }}</span>
+        <div class="hero-copy">
+          <p class="hero-kicker">HELLO, I AM 宋爽</p>
+          <h1>{{ profile.name }} <span>/ {{ profile.nickname }}</span></h1>
+          <p class="hero-status">{{ profile.status }}</p>
+          <p class="hero-intro">{{ profile.intro }}</p>
+          <div class="hero-meta">
+            <span><MapPin :size="12" /> {{ profile.hometown }}</span>
             <span><BookOpen :size="12" /> 小窝建于 {{ formatDate(site.startDate) }}</span>
-            <span><Heart :size="12" /> 保持热爱</span>
+            <span><Heart :size="12" /> 慢慢来，比较快</span>
           </div>
-        </div>
-
-        <div class="pursuit-card">
-          <p class="pursuit-label">追求</p>
-          <h3>源于<br /><b>乐趣 · 兴趣 · 学习</b></h3>
-          <p>
-            不为了成为谁，只想把喜欢的事做得久一点。写代码是，写字也是。
-          </p>
-          <span class="pursuit-line"></span>
-          <span class="pursuit-mark">“</span>
+          <div class="hero-chips">
+            <span v-for="skill in skillList" :key="skill">{{ skill }}</span>
+          </div>
         </div>
       </section>
 
       <section class="about-grid">
-        <div class="visit-card">
-          <header class="card-head">
-            <div>
-              <p class="card-eyebrow">VISITORS</p>
-              <h3>访问统计</h3>
-            </div>
-            <span class="head-dot"><i></i> 实时</span>
-          </header>
-          <div class="visit-grid">
-            <div v-for="item in visitItems" :key="item.label">
-              <strong>{{ formatNumber(item.value) }}</strong>
-              <span>{{ item.label }}</span>
-            </div>
+        <article class="info-card glass-card">
+          <span class="card-icon"><Target :size="18" /></span>
+          <h2>我的方向</h2>
+          <p>{{ profile.goal }}</p>
+          <p class="muted-line">长期关注人工智能、智能体与大模型上层应用，把 AI 能力落到实际可用的产品里。</p>
+        </article>
+        <article class="info-card glass-card">
+          <span class="card-icon"><Code2 :size="18" /></span>
+          <h2>技术关键词</h2>
+          <div class="tag-list">
+            <span v-for="skill in skillList" :key="skill">{{ skill }}</span>
           </div>
-          <div class="visit-foot">
-            <span>在这个不大的地方，已经留下了 {{ formatNumber(stats?.totalViews ?? 0) }} 次目光。</span>
-          </div>
-        </div>
+          <p class="muted-line">前端、后端、移动端都做过；比起堆技术，更在意一个项目能不能完整跑起来。</p>
+        </article>
+      </section>
 
-        <div class="map-card">
-          <div class="map-grid"></div>
-          <svg class="map-lines" viewBox="0 0 600 280" preserveAspectRatio="none" aria-hidden="true">
-            <path d="M-20 210 C80 150 170 190 240 140 C320 82 400 120 470 80 C530 46 580 60 620 40" fill="none" stroke="rgba(63, 145, 160, 0.2)" stroke-width="2" />
-            <path d="M-10 250 C100 220 180 240 270 200 C360 160 440 190 520 150 C570 126 600 132 620 120" fill="none" stroke="rgba(63, 145, 160, 0.13)" stroke-width="1.5" />
-            <path d="M120 300 C150 220 140 160 200 100 C250 50 330 70 380 20" fill="none" stroke="rgba(63, 145, 160, 0.1)" stroke-width="1.5" />
-          </svg>
-          <span class="map-pin"><i></i></span>
-          <div class="map-copy">
-            <p class="map-label">WHERE I LIVE</p>
-            <h3>我住在 {{ site.location }}</h3>
-            <p>云很远，日子很近。欢迎来我的城市看一次日落。</p>
-          </div>
-          <span class="map-coord">CLOUD · EARTH</span>
+      <section class="section-block">
+        <div class="section-head">
+          <p class="eyebrow">EDUCATION</p>
+          <h2><GraduationCap :size="20" /> 教育背景</h2>
+        </div>
+        <div class="timeline">
+          <article class="timeline-item glass-card">
+            <div class="timeline-dot"></div>
+            <div class="timeline-head">
+              <div>
+                <h3>{{ profile.bachelorSchool }}</h3>
+                <p>{{ profile.bachelorMajor }}</p>
+              </div>
+              <span>{{ profile.bachelorPeriod }}</span>
+            </div>
+            <p class="timeline-text">{{ profile.bachelorCourses }}</p>
+            <p class="timeline-text">{{ profile.bachelorExperience }}</p>
+          </article>
+
+          <article class="timeline-item glass-card">
+            <div class="timeline-dot"></div>
+            <div class="timeline-head">
+              <div>
+                <h3>{{ profile.collegeSchool }}</h3>
+                <p>{{ profile.collegeMajor }}</p>
+              </div>
+              <span>{{ profile.collegePeriod }}</span>
+            </div>
+            <p class="timeline-text">主修课程：{{ profile.collegeCourses }}</p>
+            <div class="course-tags">
+              <span v-for="course in courses" :key="course">{{ course }}</span>
+            </div>
+            <p class="timeline-text">{{ profile.collegeExperience }}</p>
+          </article>
         </div>
       </section>
 
-      <section class="traits-section">
-        <div class="traits-card glass-card">
-          <header class="traits-head">
-            <p class="eyebrow">SOME FACTS</p>
-            <h3>关于我的几个关键词</h3>
-          </header>
-          <div class="traits-grid">
-            <div v-for="trait in traits" :key="trait.label" class="trait-item">
-              <span>{{ trait.label }}</span>
-              <p>{{ trait.value }}</p>
-            </div>
-          </div>
+      <section class="section-block">
+        <div class="section-head">
+          <p class="eyebrow">HONORS &amp; CERTIFICATES</p>
+          <h2><Award :size="20" /> 荣誉与证书</h2>
+          <p class="section-desc">按照展示优先级排列，未展示的荣誉不会出现在这里。</p>
         </div>
 
-        <div class="site-card glass-card">
-          <header class="traits-head">
-            <p class="eyebrow">THIS SITE</p>
-            <h3>关于这个小窝</h3>
-          </header>
-          <p class="site-desc">
-            前端用 Vue 3 + TypeScript，后端用 Spring Boot，数据存放在本地 H2 数据库。没有复杂的框架堆叠，只想要一个干净、好维护、能慢慢长大的个人站。
-          </p>
-          <div class="stack">
-            <span v-for="tech in site.techStack" :key="tech">{{ tech }}</span>
-          </div>
-          <ul class="site-facts">
-            <li><span>域名</span><b>{{ site.domain }}</b></li>
-            <li><span>上线</span><b>{{ formatDate(site.startDate) }}</b></li>
-            <li><span>插画</span><b>原创 SVG 绘制</b></li>
-            <li><span>备案</span><b>{{ site.icp }}</b></li>
-          </ul>
+        <div v-if="honors.length" class="honor-grid">
+          <article v-for="honor in honors" :key="honor.id" class="honor-card glass-card">
+            <a v-if="honor.imageUrl" :href="assetUrl(honor.imageUrl)" target="_blank" rel="noreferrer noopener" class="honor-image">
+              <img :src="assetUrl(honor.imageUrl)" :alt="honor.title" loading="lazy" />
+            </a>
+            <div v-else class="honor-image honor-placeholder">
+              <Award :size="38" />
+              <span>暂无证书图片</span>
+            </div>
+            <div class="honor-copy">
+              <span class="honor-date">{{ honorsDate(honor.awardedAt) }}</span>
+              <h3>{{ honor.title }}</h3>
+              <p class="honor-issuer">{{ honor.issuer }}</p>
+              <p v-if="honor.description" class="honor-desc">{{ honor.description }}</p>
+            </div>
+          </article>
         </div>
+        <div v-else class="empty-state glass-card">荣誉正在整理中。</div>
       </section>
 
-      <section class="contact-card">
+      <section class="contact-card glass-card">
         <div>
           <p class="eyebrow">SAY HELLO</p>
-          <h2>如果你也喜欢云、文字和代码，<br />那我们大概会成为朋友。</h2>
-          <p>欢迎写信，或者去留言板坐坐。看到都会认真回复。</p>
+          <h2>如果你也在做有趣的事，欢迎聊聊。</h2>
+          <p>无论是 AI 应用、Web 项目、竞赛，还是只是想留一句话，都可以找到我。</p>
         </div>
-        <div class="contact-actions">
-          <a class="contact-btn" :href="`mailto:${site.email}`"><Mail :size="15" /> 写邮件</a>
-          <a class="contact-btn" :href="site.github || '#'" target="_blank" rel="noreferrer noopener"><Github :size="15" /> GitHub</a>
-          <RouterLink class="contact-btn primary" to="/guestbook"><MessageCircle :size="15" /> 留言板 <ArrowUpRight :size="12" /></RouterLink>
+        <div class="contact-list">
+          <a :href="`mailto:${profile.email}`"><Mail :size="15" /> {{ profile.email }}</a>
+          <a :href="`tel:${profile.phone}`"><Phone :size="15" /> {{ profile.phone }}</a>
+          <span><MapPin :size="15" /> {{ profile.hometown }}</span>
+          <span><Sparkles :size="15" /> {{ profile.birthDate }} 出生</span>
         </div>
       </section>
     </div>
@@ -209,723 +225,383 @@ onMounted(async () => {
 
 <style scoped>
 .about-page {
-  padding-bottom: 50px;
+  padding-bottom: 56px;
 }
 
 .about-hero {
-  position: relative;
-  min-height: 560px;
   display: flex;
-  flex-direction: column;
+  gap: 26px;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 112px 0 30px;
+  padding: 28px;
+  margin-bottom: 16px;
 }
 
 .hero-avatar {
+  flex: none;
   position: relative;
-  margin-bottom: 20px;
-}
-
-.avatar-ring {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  transform: translate(-50%, -50%);
-}
-
-.avatar-ring.r1 {
-  width: 196px;
-  height: 196px;
-}
-.avatar-ring.r2 {
-  width: 232px;
-  height: 232px;
-  opacity: 0.55;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .avatar-badge {
   position: absolute;
-  left: 50%;
-  bottom: -6px;
-  transform: translateX(-50%);
+  right: -6px;
+  bottom: -3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: #fff;
+  color: #247f96;
+  font-size: 9px;
+  font-weight: 700;
+  box-shadow: 0 5px 14px rgba(31, 99, 120, 0.14);
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
+.hero-kicker {
+  margin: 0 0 3px;
+  font: 10px/1.5 'Times New Roman', serif;
+  letter-spacing: 2.5px;
+  color: #7d9aa4;
+}
+
+.hero-copy h1 {
+  margin: 0;
+  font-size: clamp(26px, 4vw, 40px);
+  color: #164452;
+}
+
+.hero-copy h1 span {
+  font-size: 0.52em;
+  color: #6f99a4;
+  font-weight: 400;
+}
+
+.hero-status {
+  margin: 5px 0 10px;
+  font-size: 12px;
+  font-weight: 650;
+  color: #2b8ca4;
+}
+
+.hero-intro {
+  margin: 0 0 12px;
+  max-width: 820px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #5f7f89;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  font-size: 10px;
+  color: #8ba2aa;
+}
+
+.hero-meta span {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.9);
-  color: #2e7185;
-  font-size: 9px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  box-shadow: 0 6px 16px rgba(31, 99, 120, 0.16);
 }
 
-.float-note {
-  position: absolute;
-  z-index: 2;
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  box-shadow: 0 8px 20px rgba(31, 99, 120, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  animation: floatNote 6s ease-in-out infinite;
-}
-
-.float-note.mint {
-  background: rgba(226, 249, 243, 0.9);
-  color: #2e9079;
-}
-.float-note.blue {
-  background: rgba(229, 245, 252, 0.92);
-  color: #317f9e;
-}
-.float-note.butter {
-  background: rgba(255, 246, 218, 0.92);
-  color: #a9832f;
-}
-.float-note.pink {
-  background: rgba(255, 235, 240, 0.92);
-  color: #bd6b80;
-}
-.float-note.violet {
-  background: rgba(242, 238, 252, 0.92);
-  color: #7c6ab3;
-}
-
-.float-note.n1 {
-  top: 150px;
-  left: 22%;
-}
-.float-note.n2 {
-  top: 210px;
-  right: 18%;
-  animation-delay: 1.2s;
-}
-.float-note.n3 {
-  top: 320px;
-  left: 11%;
-  animation-delay: 2.1s;
-}
-.float-note.n4 {
-  top: 130px;
-  right: 25%;
-  animation-delay: 0.7s;
-}
-.float-note.n5 {
-  top: 360px;
-  right: 12%;
-  animation-delay: 1.7s;
-}
-.float-note.n6 {
-  top: 260px;
-  left: 5%;
-  animation-delay: 2.7s;
-}
-
-.about-hero h1 {
-  margin: 7px 0 10px;
-  font-size: clamp(30px, 4.2vw, 46px);
-  line-height: 1.4;
-  letter-spacing: 3px;
-  color: #123f4d;
-  text-shadow: 0 2px 20px rgba(255, 255, 255, 0.6);
-}
-
-.hero-desc {
-  margin: 0;
-  font-size: 12.5px;
-  line-height: 2;
-  color: #537681;
+.hero-chips,
+.tag-list,
+.course-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .hero-chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
-.hero-chips span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 5px 10px;
+.hero-chips span,
+.tag-list span,
+.course-tags span {
+  padding: 4px 9px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  font-size: 9px;
-  color: #5d8793;
-}
-
-.intro-grid {
-  display: grid;
-  grid-template-columns: 1.35fr 0.65fr;
-  gap: 16px;
-}
-
-.name-card {
-  position: relative;
-  overflow: hidden;
-  padding: 30px 32px;
-  border-radius: 22px;
-  color: #f3fffc;
-  background:
-    radial-gradient(circle at 84% 18%, rgba(255, 255, 255, 0.22), transparent 30%),
-    linear-gradient(125deg, #2382a2, #3fb2c8 55%, #8bdde0);
-  box-shadow: 0 20px 50px rgba(29, 122, 151, 0.22);
-}
-
-.name-card::after {
-  content: '';
-  position: absolute;
-  right: -60px;
-  bottom: -100px;
-  width: 280px;
-  height: 280px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  box-shadow:
-    0 0 0 36px rgba(255, 255, 255, 0.05),
-    0 0 0 78px rgba(255, 255, 255, 0.03);
-}
-
-.name-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.name-tag {
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: rgba(236, 255, 251, 0.66);
-}
-
-.name-spark {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 13px;
-}
-
-.name-card h2 {
-  margin: 9px 0 4px;
-  font-size: 29px;
-  letter-spacing: 2px;
-}
-
-.name-card h2 span {
-  font-size: 12px;
-  font-weight: 400;
-  letter-spacing: 1px;
-  color: rgba(236, 255, 251, 0.62);
-}
-
-.name-line {
-  margin: 0 0 9px;
-  font-family: var(--font-serif);
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  color: rgba(240, 255, 252, 0.8);
-}
-
-.name-bio {
-  position: relative;
-  z-index: 2;
-  max-width: 480px;
-  margin: 0;
-  font-size: 11.5px;
-  line-height: 1.9;
-  color: rgba(234, 255, 250, 0.78);
-}
-
-.name-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px 16px;
-  margin-top: 20px;
-  font-size: 9px;
-  color: rgba(232, 255, 250, 0.62);
-}
-
-.name-meta span {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.pursuit-card {
-  position: relative;
-  padding: 26px 28px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.92);
-  box-shadow: var(--shadow-sm);
-  overflow: hidden;
-}
-
-.pursuit-label {
-  margin: 0 0 6px;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: #95a9b0;
-}
-
-.pursuit-card h3 {
-  margin: 0 0 10px;
-  font-size: 23px;
-  line-height: 1.5;
-  font-weight: 500;
-  color: #3d6571;
-  letter-spacing: 1px;
-}
-
-.pursuit-card h3 b {
-  color: #df6f6a;
-  font-weight: 750;
-}
-
-.pursuit-card p {
-  margin: 0;
-  max-width: 230px;
-  font-size: 10.5px;
-  line-height: 1.8;
-  color: #829aa2;
-}
-
-.pursuit-line {
-  display: block;
-  width: 36px;
-  height: 2px;
-  margin-top: 18px;
-  background: #edb1a9;
-}
-
-.pursuit-mark {
-  position: absolute;
-  right: 12px;
-  bottom: -30px;
-  font-family: Georgia, serif;
-  font-size: 130px;
-  line-height: 1;
-  color: rgba(223, 111, 106, 0.08);
+  background: #eef9fb;
+  color: #4a7f8d;
+  font-size: 9.5px;
 }
 
 .about-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 14px;
 }
 
-.visit-card {
-  padding: 24px 26px;
-  border-radius: 20px;
-  background: linear-gradient(140deg, rgba(209, 242, 250, 0.9), rgba(255, 255, 255, 0.76));
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: var(--shadow-sm);
+.info-card {
+  padding: 22px;
 }
 
-.card-head {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.card-eyebrow {
-  margin: 0;
-  font-family: 'Times New Roman', serif;
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: #7da4ae;
-}
-
-.card-head h3 {
-  margin: 3px 0 0;
-  font-size: 16px;
-  color: #235666;
-}
-
-.head-dot {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 8.5px;
-  color: #4ba08a;
-}
-
-.head-dot i {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #49b78f;
-}
-
-.visit-grid {
+.card-icon {
+  width: 34px;
+  height: 34px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px 8px;
-  margin: 18px 0 14px;
+  place-items: center;
+  border-radius: 10px;
+  background: #e8f8fb;
+  color: #2b8ca4;
+  margin-bottom: 8px;
 }
 
-.visit-grid strong {
-  display: block;
+.info-card h2 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  color: #1d4f5e;
+}
+
+.info-card p {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: #5f7f89;
+}
+
+.muted-line {
+  color: #8ba2aa !important;
+  font-size: 10.5px !important;
+}
+
+.section-block {
+  margin-top: 28px;
+}
+
+.section-head {
+  margin-bottom: 12px;
+}
+
+.section-head h2 {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 3px 0 5px;
   font-size: 21px;
-  line-height: 1.1;
-  color: #1d6c82;
-  font-weight: 780;
+  color: #164452;
 }
 
-.visit-grid span {
-  font-size: 8.5px;
+.section-desc {
+  margin: 0;
+  font-size: 10.5px;
   color: #8ba2aa;
 }
 
-.visit-foot {
-  padding-top: 10px;
-  border-top: 1px dashed rgba(48, 112, 131, 0.16);
-  font-size: 9px;
-  color: #91a7ae;
-}
-
-.map-card {
+.timeline {
   position: relative;
+  display: grid;
+  gap: 12px;
+  padding-left: 18px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 12px;
+  bottom: 12px;
+  width: 1px;
+  background: linear-gradient(#8fd7df, rgba(143, 215, 223, 0.1));
+}
+
+.timeline-item {
+  position: relative;
+  padding: 18px 20px;
+}
+
+.timeline-dot {
+  position: absolute;
+  left: -18px;
+  top: 23px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #65cdd9;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 3px rgba(101, 205, 217, 0.16);
+}
+
+.timeline-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.timeline-head h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #1d4f5e;
+}
+
+.timeline-head p {
+  margin: 3px 0 0;
+  font-size: 11px;
+  color: #2b8ca4;
+}
+
+.timeline-head > span {
+  flex: none;
+  font-size: 10px;
+  color: #8ba2aa;
+}
+
+.timeline-text {
+  margin: 9px 0 0;
+  font-size: 11.5px;
+  line-height: 1.85;
+  color: #607f89;
+}
+
+.course-tags {
+  margin-top: 8px;
+}
+
+.honor-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.honor-card {
   overflow: hidden;
-  min-height: 220px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #d7f0f4, #a9dde8 55%, #8dcfdd);
-  border: 1px solid rgba(255, 255, 255, 0.85);
-  box-shadow: var(--shadow-sm);
 }
 
-.map-grid {
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.28) 1px, transparent 1px);
-  background-size: 34px 34px;
-  opacity: 0.55;
+.honor-image {
+  display: block;
+  height: 230px;
+  background: #f3fafc;
+  border-bottom: 1px solid rgba(208, 236, 241, 0.8);
 }
 
-.map-lines {
-  position: absolute;
-  inset: 0;
+.honor-image img {
   width: 100%;
   height: 100%;
-}
-
-.map-pin {
-  position: absolute;
-  right: 26%;
-  top: 36%;
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  animation: pinPulse 2.6s ease-in-out infinite;
-}
-
-.map-pin i {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #f27f8e;
-  box-shadow: 0 0 0 4px rgba(242, 127, 142, 0.25);
-}
-
-.map-copy {
-  position: absolute;
-  left: 24px;
-  bottom: 20px;
-  z-index: 2;
-}
-
-.map-label {
-  margin: 0 0 3px;
-  font-family: 'Times New Roman', serif;
-  font-size: 8px;
-  letter-spacing: 2px;
-  color: rgba(32, 92, 105, 0.55);
-}
-
-.map-copy h3 {
-  margin: 0 0 3px;
-  font-size: 16px;
-  color: #1d5a68;
-}
-
-.map-copy p:last-child {
-  margin: 0;
-  max-width: 220px;
-  font-size: 9px;
-  line-height: 1.7;
-  color: rgba(38, 93, 105, 0.72);
-}
-
-.map-coord {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  font-family: 'Times New Roman', serif;
-  font-size: 8px;
-  letter-spacing: 1.5px;
-  color: rgba(32, 92, 105, 0.5);
-}
-
-.traits-section {
-  display: grid;
-  grid-template-columns: 1.1fr 0.9fr;
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.traits-card,
-.site-card {
-  padding: 24px 26px;
-}
-
-.traits-head h3 {
-  margin: 4px 0 14px;
-  font-size: 16px;
-  color: #245563;
-}
-
-.traits-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px 16px;
-}
-
-.trait-item {
-  padding: 9px 12px;
-  border-radius: 10px;
-  background: rgba(246, 252, 253, 0.8);
-  border: 1px solid rgba(227, 243, 247, 0.9);
-}
-
-.trait-item span {
+  object-fit: contain;
   display: block;
-  font-size: 8.5px;
-  letter-spacing: 1px;
-  color: #9aadb3;
+  transition: transform 0.25s ease;
 }
 
-.trait-item p {
-  margin: 2px 0 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: #3c6875;
+.honor-image:hover img {
+  transform: scale(1.02);
 }
 
-.site-desc {
-  margin: 0 0 12px;
-  font-size: 10.5px;
-  line-height: 1.9;
-  color: #6f8a93;
-}
-
-.stack {
+.honor-placeholder {
   display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-bottom: 14px;
-}
-
-.stack span {
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: #eaf8fb;
-  color: #2e8198;
-  font-size: 8.5px;
-  font-weight: 650;
-}
-
-.site-facts {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 5px;
-}
-
-.site-facts li {
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-  padding-bottom: 5px;
-  border-bottom: 1px dashed rgba(48, 112, 131, 0.1);
-  font-size: 9px;
+  justify-content: center;
+  gap: 8px;
+  color: #9ab7bf;
+  font-size: 10px;
 }
 
-.site-facts span {
-  color: #96aab1;
+.honor-copy {
+  padding: 15px 17px 17px;
 }
 
-.site-facts b {
-  font-weight: 600;
-  color: #4d7581;
+.honor-date {
+  font: 9px/1.5 'Times New Roman', serif;
+  letter-spacing: 1px;
+  color: #a07a45;
+}
+
+.honor-copy h3 {
+  margin: 3px 0 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: #1d4f5e;
+}
+
+.honor-issuer {
+  margin: 0;
+  font-size: 10px;
+  color: #6f99a4;
+}
+
+.honor-desc {
+  margin: 7px 0 0;
+  font-size: 10px;
+  line-height: 1.7;
+  color: #8ba2aa;
 }
 
 .contact-card {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 26px;
-  margin-top: 18px;
-  padding: 30px 34px;
-  border-radius: 22px;
-  background: linear-gradient(120deg, rgba(255, 255, 255, 0.78), rgba(233, 249, 251, 0.78));
-  border: 1px solid rgba(255, 255, 255, 0.88);
-  box-shadow: var(--shadow-sm);
+  gap: 24px;
+  margin-top: 28px;
+  padding: 24px;
 }
 
 .contact-card h2 {
-  margin: 6px 0 5px;
-  font-size: 21px;
-  line-height: 1.5;
-  letter-spacing: 1px;
-  color: #194b5a;
+  margin: 3px 0 6px;
+  font-size: 20px;
+  color: #164452;
 }
 
-.contact-card p:last-child {
+.contact-card p:not(.eyebrow) {
   margin: 0;
-  font-size: 10.5px;
-  color: #819aa3;
+  max-width: 560px;
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: #6f8a93;
 }
 
-.contact-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.contact-list {
+  display: grid;
+  align-content: center;
+  gap: 7px;
   flex: none;
+  font-size: 11px;
 }
 
-.contact-btn {
+.contact-list a,
+.contact-list span {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 9px 14px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  background: rgba(255, 255, 255, 0.7);
-  color: #386c7b;
-  font-size: 10.5px;
-  font-weight: 650;
+  gap: 6px;
+  color: #4a7f8d;
   text-decoration: none;
-  transition: all 0.2s ease;
 }
 
-.contact-btn:hover {
-  background: #fff;
-  transform: translateY(-1px);
-}
-
-.contact-btn.primary {
-  background: #2fa8c9;
-  border-color: #2fa8c9;
-  color: #fff;
-  box-shadow: 0 10px 22px rgba(31, 133, 162, 0.22);
-}
-
-@keyframes floatNote {
-  0%,
-  100% {
-    transform: translateY(0);
+@media (max-width: 760px) {
+  .about-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 22px;
   }
-  50% {
-    transform: translateY(-7px);
-  }
-}
-
-@keyframes pinPulse {
-  0%,
-  100% {
-    transform: scale(1);
-    opacity: 0.95;
-  }
-  50% {
-    transform: scale(1.12);
-    opacity: 0.7;
-  }
-}
-
-@media (max-width: 900px) {
-  .intro-grid,
   .about-grid,
-  .traits-section {
+  .honor-grid {
     grid-template-columns: 1fr;
-  }
-  .float-note.n1,
-  .float-note.n3,
-  .float-note.n6 {
-    left: 3%;
-  }
-  .float-note.n2,
-  .float-note.n5 {
-    right: 3%;
   }
   .contact-card {
     flex-direction: column;
-    align-items: flex-start;
+  }
+  .honor-image {
+    height: 240px;
   }
 }
 
-@media (max-width: 620px) {
-  .about-hero {
-    min-height: 520px;
-    padding-top: 90px;
-  }
-  .float-note {
-    font-size: 8px;
-  }
-  .float-note.n1 {
-    top: 152px;
-    left: 3%;
-  }
-  .float-note.n2 {
-    top: 208px;
-    right: 3%;
-  }
-  .float-note.n3,
-  .float-note.n4,
-  .float-note.n5,
-  .float-note.n6 {
-    display: none;
-  }
-  .about-hero h1 {
+@media (max-width: 480px) {
+  .hero-copy h1 {
     font-size: 28px;
-    letter-spacing: 2px;
   }
-  .hide-mobile {
-    display: none;
+  .timeline-head {
+    flex-direction: column;
+    gap: 3px;
   }
-  .name-card,
-  .pursuit-card {
-    padding: 22px;
-  }
-  .visit-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .traits-grid {
-    grid-template-columns: 1fr;
-  }
-  .contact-card {
-    padding: 24px 20px;
-  }
-  .contact-card h2 {
-    font-size: 18px;
+  .honor-image {
+    height: 205px;
   }
 }
 </style>

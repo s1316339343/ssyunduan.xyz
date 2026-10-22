@@ -15,7 +15,6 @@ const links = [
   { label: '随笔', to: '/moments' },
   { label: '相册', to: '/gallery' },
   { label: '友链', to: '/friends' },
-  { label: '日志', to: '/changelog' },
   { label: '留言板', to: '/guestbook' },
   { label: '关于我', to: '/about' },
 ]

@@ -1,4 +1,7 @@
 import type {
+  AboutData,
+  AboutProfile,
+  AboutProfilePayload,
   Article,
   ArticlePayload,
   AuthResult,
@@ -7,6 +10,8 @@ import type {
   ChangelogPayload,
   Friend,
   FriendPayload,
+  Honor,
+  HonorPayload,
   Message,
   Moment,
   MomentPayload,
@@ -22,12 +27,15 @@ const BASE_URL = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_U
 const STATIC_DATA_MISSING = '静态内容还没有导出。请先在本地运行 export-pages.cmd，再把生成的数据提交到 GitHub。'
 
 export function getToken(): string {
-  return localStorage.getItem(TOKEN_KEY) || ''
+  const token = sessionStorage.getItem(TOKEN_KEY) || ''
+  // 旧版本把 Token 放在 localStorage；升级后清掉，避免“看起来登录了、实际没有权限”。
+  localStorage.removeItem(TOKEN_KEY)
+  return token
 }
 
 export function setToken(token: string) {
-  if (token) localStorage.setItem(TOKEN_KEY, token)
-  else localStorage.removeItem(TOKEN_KEY)
+  if (token) sessionStorage.setItem(TOKEN_KEY, token)
+  else sessionStorage.removeItem(TOKEN_KEY)
 }
 
 export class ApiError extends Error {
@@ -171,6 +179,9 @@ export const api = {
   stats: async () =>
     (await backendUp()) ? request<Stats>('/stats') : staticJson<Stats>('stats'),
 
+  about: async () =>
+    (await backendUp()) ? request<AboutData>('/about') : staticJson<AboutData>('about'),
+
   login: (payload: { username: string; password: string }) =>
     mutate<AuthResult>('/auth/login', { method: 'POST', body: JSON.stringify(payload) }),
 
@@ -230,6 +241,15 @@ export const api = {
   updateChangelog: (id: number, payload: ChangelogPayload) =>
     mutate<ChangelogEntry>(`/admin/changelog/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteChangelog: (id: number) => mutate<{ ok: boolean }>(`/admin/changelog/${id}`, { method: 'DELETE' }),
+
+  adminAbout: () => mutate<AboutData>('/admin/about'),
+  updateAbout: (payload: AboutProfilePayload) =>
+    mutate<AboutProfile>('/admin/about', { method: 'PUT', body: JSON.stringify(payload) }),
+  createHonor: (payload: HonorPayload) =>
+    mutate<Honor>('/admin/about/honors', { method: 'POST', body: JSON.stringify(payload) }),
+  updateHonor: (id: number, payload: HonorPayload) =>
+    mutate<Honor>(`/admin/about/honors/${id}`, { method: 'PUT', body: JSON.stringify(payload) }),
+  deleteHonor: (id: number) => mutate<{ ok: boolean }>(`/admin/about/honors/${id}`, { method: 'DELETE' }),
 
   deleteMessage: (id: number) => mutate<{ ok: boolean }>(`/admin/messages/${id}`, { method: 'DELETE' }),
 

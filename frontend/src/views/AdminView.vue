@@ -2,9 +2,9 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
+  Award,
   BookOpen,
   Camera,
-  Clock3,
   Eye,
   FileText,
   ImagePlus,
@@ -19,6 +19,7 @@ import {
   Save,
   ShieldCheck,
   Trash2,
+  UserRound,
   X,
 } from 'lucide-vue-next'
 import PageHeader from '../components/PageHeader.vue'
@@ -27,12 +28,16 @@ import { api } from '../api/client'
 import { auth, isAdmin, logout } from '../stores/auth'
 import { notify } from '../stores/toast'
 import type {
+  AboutData,
+  AboutProfilePayload,
   Article,
   ArticlePayload,
   ChangelogEntry,
   ChangelogPayload,
   Friend,
   FriendPayload,
+  Honor,
+  HonorPayload,
   Message,
   Moment,
   MomentPayload,
@@ -41,7 +46,7 @@ import type {
 } from '../types'
 import { formatDate, relativeTime } from '../utils/format'
 
-type TabKey = 'articles' | 'moments' | 'friends' | 'photos' | 'changelog' | 'messages' | 'account'
+type TabKey = 'articles' | 'moments' | 'friends' | 'photos' | 'visits' | 'about' | 'messages' | 'account'
 
 const route = useRoute()
 const router = useRouter()
@@ -51,6 +56,7 @@ const saving = ref(false)
 const error = ref('')
 const activeTab = ref<TabKey>('articles')
 const search = ref('')
+const VISITS_WIDGET_URL = 'https://s1316339343.github.io/ssyunduan.xyz/visits.html'
 
 const articles = ref<Article[]>([])
 const moments = ref<Moment[]>([])
@@ -69,7 +75,8 @@ const tabs = [
   { key: 'moments' as const, label: '随笔', icon: PenLine },
   { key: 'friends' as const, label: '友链', icon: Link2 },
   { key: 'photos' as const, label: '相册', icon: Images },
-  { key: 'changelog' as const, label: '日志', icon: Clock3 },
+  { key: 'visits' as const, label: '访问统计', icon: Eye },
+  { key: 'about' as const, label: '关于我', icon: UserRound },
   { key: 'messages' as const, label: '留言', icon: MessageCircle },
   { key: 'account' as const, label: '账号安全', icon: KeyRound },
 ]
@@ -141,6 +148,43 @@ const changelogForm = reactive({
 })
 const changelogEditing = ref(false)
 
+const aboutProfile = reactive<AboutProfilePayload>({
+  name: '宋爽',
+  nickname: '云端',
+  birthDate: '2003-10-14',
+  hometown: '河北唐山',
+  phone: '',
+  email: '',
+  status: '',
+  intro: '',
+  goal: '',
+  collegeSchool: '河北工业职业技术大学',
+  collegeMajor: '移动应用开发',
+  collegePeriod: '2023.09 - 2026.06',
+  collegeCourses: '',
+  collegeExperience: '',
+  bachelorSchool: '沧州交通学院',
+  bachelorMajor: '物联网工程',
+  bachelorPeriod: '2026.09 - 至今',
+  bachelorCourses: '',
+  bachelorExperience: '',
+  skills: '',
+})
+const honors = ref<Honor[]>([])
+const honorForm = reactive({
+  id: null as number | null,
+  title: '',
+  issuer: '',
+  awardedAt: '',
+  imageUrl: '',
+  description: '',
+  priority: 0,
+  visible: true,
+})
+const honorEditing = ref(false)
+const honorUploading = ref(false)
+const honorFileInput = ref<HTMLInputElement | null>(null)
+
 const passwordForm = reactive({
   oldPassword: '',
   newPassword: '',
@@ -174,7 +218,7 @@ function tabCount(key: TabKey): number {
   if (key === 'moments') return moments.value.length
   if (key === 'friends') return friends.value.length
   if (key === 'photos') return photos.value.length
-  if (key === 'changelog') return changelog.value.length
+  if (key === 'about') return honors.value.length
   if (key === 'messages') return messages.value.length
   return 0
 }
@@ -184,20 +228,20 @@ async function loadAll() {
   loading.value = true
   error.value = ''
   try {
-    const [articleData, momentData, friendData, photoData, changelogData, messageData] = await Promise.all([
+    const [articleData, momentData, friendData, photoData, messageData, aboutData] = await Promise.all([
       api.adminArticles(),
       api.adminMoments(),
       api.adminFriends(),
       api.adminPhotos(),
-      api.adminChangelog(),
       api.messages(),
+      api.adminAbout(),
     ])
     articles.value = articleData
     moments.value = momentData
     friends.value = friendData
     photos.value = photoData
-    changelog.value = changelogData
     messages.value = messageData
+    applyAbout(aboutData)
     openArticleFromQuery()
   } catch (e) {
     error.value = e instanceof Error ? e.message : '内容加载失败。'
@@ -230,6 +274,137 @@ async function refreshFriends() {
 
 async function refreshPhotos() {
   photos.value = await api.adminPhotos()
+}
+
+function applyAbout(data: AboutData) {
+  Object.assign(aboutProfile, data.profile)
+  honors.value = data.honors
+}
+
+async function refreshAbout() {
+  applyAbout(await api.adminAbout())
+}
+
+async function saveAboutProfile() {
+  if (!aboutProfile.name.trim()) {
+    notify('姓名不能为空。', 'warn')
+    return
+  }
+  saving.value = true
+  try {
+    const { id: _ignored, ...payload } = aboutProfile as AboutProfilePayload & { id?: number }
+    await api.updateAbout(payload)
+    notify('关于我页面已保存。')
+    await refreshAbout()
+  } catch (e) {
+    notify(e instanceof Error ? e.message : '保存失败。', 'warn')
+  } finally {
+    saving.value = false
+  }
+}
+
+function resetHonor() {
+  Object.assign(honorForm, {
+    id: null,
+    title: '',
+    issuer: '',
+    awardedAt: '',
+    imageUrl: '',
+    description: '',
+    priority: 0,
+    visible: true,
+  })
+}
+
+function newHonor() {
+  resetHonor()
+  honorEditing.value = true
+}
+
+function editHonor(honor: Honor) {
+  Object.assign(honorForm, {
+    id: honor.id,
+    title: honor.title,
+    issuer: honor.issuer || '',
+    awardedAt: honor.awardedAt || '',
+    imageUrl: honor.imageUrl || '',
+    description: honor.description || '',
+    priority: honor.priority,
+    visible: honor.visible,
+  })
+  honorEditing.value = true
+}
+
+async function saveHonor() {
+  if (!honorForm.title.trim()) {
+    notify('荣誉名称不能为空。', 'warn')
+    return
+  }
+  saving.value = true
+  const payload: HonorPayload = {
+    title: honorForm.title.trim(),
+    issuer: honorForm.issuer.trim(),
+    awardedAt: honorForm.awardedAt.trim(),
+    imageUrl: honorForm.imageUrl,
+    description: honorForm.description.trim(),
+    priority: Number(honorForm.priority) || 0,
+    visible: honorForm.visible,
+  }
+  try {
+    if (honorForm.id) await api.updateHonor(honorForm.id, payload)
+    else await api.createHonor(payload)
+    notify('荣誉已保存。')
+    honorEditing.value = false
+    resetHonor()
+    await refreshAbout()
+  } catch (e) {
+    notify(e instanceof Error ? e.message : '保存失败。', 'warn')
+  } finally {
+    saving.value = false
+  }
+}
+
+async function deleteHonor(honor: Honor) {
+  if (!window.confirm(`确定删除「${honor.title}」吗？`)) return
+  try {
+    await api.deleteHonor(honor.id)
+    notify('荣誉已删除。')
+    await refreshAbout()
+  } catch (e) {
+    notify(e instanceof Error ? e.message : '删除失败。', 'warn')
+  }
+}
+
+function chooseHonorImage() {
+  honorFileInput.value?.click()
+}
+
+async function uploadHonorImage(event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  if (file.size > 10 * 1024 * 1024) {
+    notify('图片不能超过 10MB。', 'warn')
+    input.value = ''
+    return
+  }
+  honorUploading.value = true
+  try {
+    const result = await api.uploadImage(file)
+    honorForm.imageUrl = result.url
+    notify('证书图片上传成功。')
+  } catch (e) {
+    notify(e instanceof Error ? e.message : '图片上传失败。', 'warn')
+  } finally {
+    honorUploading.value = false
+    input.value = ''
+  }
+}
+
+function honorImageUrl(url: string | null): string {
+  if (!url) return ''
+  if (/^https?:\/\//.test(url)) return url
+  return `${import.meta.env.BASE_URL}${url.replace(/^\//, '')}`
 }
 
 async function refreshChangelog() {
@@ -940,31 +1115,129 @@ onMounted(() => {
             <div v-else class="admin-empty glass-card"><Camera :size="24" /><h3>还没有照片</h3><p>添加第一张画面。</p></div>
           </section>
 
-          <!-- 日志 -->
-          <section v-else-if="activeTab === 'changelog'">
+          <!-- 访问统计 -->
+          <section v-else-if="activeTab === 'visits'">
             <div class="admin-toolbar">
-              <div><p class="eyebrow">CHANGELOG</p><h2>更新日志</h2><p>记录网站每一次小小的改动。</p></div>
-              <button class="btn btn-primary" type="button" @click="newChangelog"><Plus :size="14" /> 新建日志</button>
+              <div><p class="eyebrow">VISITORS</p><h2>访问统计</h2><p>读取 GitHub Pages 公网计数器，看看有没有人来过。</p></div>
+              <a class="btn btn-ghost" :href="VISITS_WIDGET_URL" target="_blank" rel="noreferrer noopener">
+                <Eye :size="14" /> 新窗口打开
+              </a>
             </div>
+            <div class="visits-embed glass-card">
+              <iframe :src="VISITS_WIDGET_URL" title="访问统计" loading="lazy"></iframe>
+            </div>
+            <p class="visits-embed-hint">
+              只统计公网 Pages 的访问，不包含 localhost；数据来自 Busuanzi，只能看总量，无法知道具体是谁。
+            </p>
+          </section>
 
-            <div v-if="changelogEditing" class="editor-card glass-card">
-              <div class="editor-head"><h3>{{ changelogForm.id ? '编辑日志' : '新建日志' }}</h3><button type="button" class="icon-close" @click="changelogEditing = false; resetChangelog()"><X :size="17" /></button></div>
-              <div class="form-grid">
-                <label class="field"><span>日期</span><input v-model="changelogForm.date" type="date" /></label>
-                <label class="field"><span>版本号</span><input v-model="changelogForm.version" type="text" maxlength="20" /></label>
-                <label class="field span-2"><span>更新内容（每行一条）*</span><textarea v-model="changelogForm.items" rows="6"></textarea></label>
+          <!-- 关于我 -->
+          <section v-else-if="activeTab === 'about'">
+            <div class="admin-toolbar">
+              <div><p class="eyebrow">ABOUT</p><h2>关于我</h2><p>编辑个人简历、教育背景和荣誉证书，保存后重新导出即可更新线上页面。</p></div>
+              <div class="toolbar-actions">
+                <button class="btn btn-ghost" type="button" @click="refreshAbout"><RefreshCw :size="14" /> 刷新</button>
+                <button class="btn btn-primary" type="button" :disabled="saving" @click="saveAboutProfile"><Save :size="14" /> 保存资料</button>
               </div>
-              <div class="editor-actions"><button class="btn btn-ghost" type="button" @click="changelogEditing = false; resetChangelog()">取消</button><button class="btn btn-primary" type="button" :disabled="saving" @click="saveChangelog"><Save :size="14" /> 保存</button></div>
             </div>
 
-            <div v-if="changelog.length" class="admin-list">
-              <article v-for="entry in changelog" :key="entry.id" class="admin-row changelog-row">
-                <div class="log-date">{{ entry.date }}</div>
-                <div class="admin-row-copy"><h3>{{ entry.version }}</h3><p>{{ entry.items.join(' · ') }}</p></div>
-                <div class="row-actions"><button type="button" class="row-btn" @click="editChangelog(entry)"><Pencil :size="14" /> 编辑</button><button type="button" class="row-btn danger" @click="deleteChangelog(entry)"><Trash2 :size="14" /> 删除</button></div>
+            <div class="editor-card glass-card">
+              <div class="editor-head"><h3>基本资料</h3></div>
+              <div class="form-grid">
+                <label class="field"><span>姓名 *</span><input v-model="aboutProfile.name" type="text" maxlength="80" /></label>
+                <label class="field"><span>网名</span><input v-model="aboutProfile.nickname" type="text" maxlength="80" /></label>
+                <label class="field"><span>出生日期</span><input v-model="aboutProfile.birthDate" type="text" maxlength="40" placeholder="2003-10-14" /></label>
+                <label class="field"><span>籍贯</span><input v-model="aboutProfile.hometown" type="text" maxlength="80" /></label>
+                <label class="field"><span>手机</span><input v-model="aboutProfile.phone" type="text" maxlength="40" /></label>
+                <label class="field"><span>邮箱</span><input v-model="aboutProfile.email" type="text" maxlength="120" /></label>
+                <label class="field span-2"><span>当前状态</span><input v-model="aboutProfile.status" type="text" maxlength="80" /></label>
+                <label class="field span-2"><span>个人介绍</span><textarea v-model="aboutProfile.intro" rows="6"></textarea></label>
+                <label class="field span-2"><span>方向 / 目标</span><textarea v-model="aboutProfile.goal" rows="2"></textarea></label>
+                <label class="field span-2"><span>技术关键词（用顿号或逗号分隔）</span><input v-model="aboutProfile.skills" type="text" maxlength="500" /></label>
+              </div>
+
+              <h3 class="about-subhead">专科教育</h3>
+              <div class="form-grid">
+                <label class="field"><span>学校</span><input v-model="aboutProfile.collegeSchool" type="text" /></label>
+                <label class="field"><span>专业</span><input v-model="aboutProfile.collegeMajor" type="text" /></label>
+                <label class="field span-2"><span>时间</span><input v-model="aboutProfile.collegePeriod" type="text" placeholder="2023.09 - 2026.06" /></label>
+                <label class="field span-2"><span>主修课程</span><textarea v-model="aboutProfile.collegeCourses" rows="2"></textarea></label>
+                <label class="field span-2"><span>校内经历</span><textarea v-model="aboutProfile.collegeExperience" rows="3"></textarea></label>
+              </div>
+
+              <h3 class="about-subhead">本科教育</h3>
+              <div class="form-grid">
+                <label class="field"><span>学校</span><input v-model="aboutProfile.bachelorSchool" type="text" /></label>
+                <label class="field"><span>专业</span><input v-model="aboutProfile.bachelorMajor" type="text" /></label>
+                <label class="field span-2"><span>时间</span><input v-model="aboutProfile.bachelorPeriod" type="text" placeholder="2026.09 - 至今" /></label>
+                <label class="field span-2"><span>主修课程</span><textarea v-model="aboutProfile.bachelorCourses" rows="2"></textarea></label>
+                <label class="field span-2"><span>校内经历</span><textarea v-model="aboutProfile.bachelorExperience" rows="2"></textarea></label>
+              </div>
+
+              <div class="editor-actions">
+                <button class="btn btn-primary" type="button" :disabled="saving" @click="saveAboutProfile"><Save :size="14" /> 保存关于我</button>
+              </div>
+            </div>
+
+            <div class="admin-list-toolbar">
+              <h3>荣誉与证书 <span>{{ honors.length }}</span></h3>
+              <button class="btn btn-primary" type="button" @click="newHonor"><Plus :size="14" /> 新建荣誉</button>
+            </div>
+
+            <div v-if="honorEditing" class="editor-card glass-card">
+              <div class="editor-head">
+                <h3>{{ honorForm.id ? '编辑荣誉' : '新建荣誉' }}</h3>
+                <button type="button" class="icon-close" @click="honorEditing = false; resetHonor()"><X :size="17" /></button>
+              </div>
+              <div class="form-grid">
+                <label class="field span-2"><span>荣誉名称 *</span><input v-model="honorForm.title" type="text" maxlength="200" /></label>
+                <label class="field"><span>颁发机构</span><input v-model="honorForm.issuer" type="text" maxlength="160" /></label>
+                <label class="field"><span>获得时间</span><input v-model="honorForm.awardedAt" type="text" maxlength="40" placeholder="2024-08 / 2024-08-29" /></label>
+                <label class="field"><span>展示优先级（越大越靠前）</span><input v-model.number="honorForm.priority" type="number" min="0" max="9999" /></label>
+                <div class="field checkbox-field">
+                  <span>在关于我页面展示</span>
+                  <label class="inline-check"><input v-model="honorForm.visible" type="checkbox" /> 展示</label>
+                </div>
+                <label class="field span-2"><span>说明</span><textarea v-model="honorForm.description" rows="2"></textarea></label>
+              </div>
+
+              <div class="honor-upload">
+                <div class="honor-upload-preview">
+                  <img v-if="honorForm.imageUrl" :src="honorImageUrl(honorForm.imageUrl)" alt="荣誉证书预览" />
+                  <span v-else><Award :size="26" /> 暂无证书图片</span>
+                </div>
+                <div class="honor-upload-actions">
+                  <input ref="honorFileInput" type="file" accept="image/jpeg,image/png,image/webp,image/gif" class="upload-input" @change="uploadHonorImage" />
+                  <button class="btn btn-soft" type="button" :disabled="honorUploading" @click="chooseHonorImage">
+                    <ImagePlus :size="14" /> {{ honorForm.imageUrl ? '重新上传证书' : '上传证书图片' }}
+                  </button>
+                  <button v-if="honorForm.imageUrl" class="btn btn-ghost" type="button" @click="honorForm.imageUrl = ''">移除图片</button>
+                  <p>JPG / PNG / WebP / GIF，最大 10MB。没有图片的荣誉会显示文字卡片。</p>
+                </div>
+              </div>
+
+              <div class="editor-actions">
+                <button class="btn btn-ghost" type="button" @click="honorEditing = false; resetHonor()">取消</button>
+                <button class="btn btn-primary" type="button" :disabled="saving || honorUploading" @click="saveHonor"><Save :size="14" /> 保存荣誉</button>
+              </div>
+            </div>
+
+            <div v-if="honors.length" class="admin-list">
+              <article v-for="honor in honors" :key="honor.id" class="admin-row honor-admin-row">
+                <img v-if="honor.imageUrl" :src="honorImageUrl(honor.imageUrl)" :alt="honor.title" class="honor-admin-thumb" />
+                <div v-else class="honor-admin-placeholder"><Award :size="22" /></div>
+                <div class="admin-row-copy">
+                  <h3>{{ honor.title }}</h3>
+                  <p>{{ honor.issuer }} · {{ honor.awardedAt }}</p>
+                  <p class="row-tags">优先级 {{ honor.priority }} · {{ honor.visible ? '展示中' : '已隐藏' }}</p>
+                </div>
+                <div class="row-actions">
+                  <button type="button" class="row-btn" @click="editHonor(honor)"><Pencil :size="14" /> 编辑</button>
+                  <button type="button" class="row-btn danger" @click="deleteHonor(honor)"><Trash2 :size="14" /> 删除</button>
+                </div>
               </article>
             </div>
-            <div v-else class="admin-empty glass-card"><Clock3 :size="24" /><h3>还没有更新日志</h3><p>记录第一次更新。</p></div>
+            <div v-else class="admin-empty glass-card"><Award :size="24" /><h3>还没有荣誉</h3><p>添加第一张证书。</p></div>
           </section>
 
           <!-- 留言 -->
@@ -1022,6 +1295,141 @@ onMounted(() => {
 
 .admin-loading {
   margin-top: 10px;
+}
+
+.visits-embed {
+  padding: 10px;
+  overflow: hidden;
+}
+
+.visits-embed iframe {
+  width: 100%;
+  height: 430px;
+  display: block;
+  border: 0;
+  border-radius: 12px;
+  background: #effbfc;
+}
+
+.visits-embed-hint {
+  margin: 10px 4px 0;
+  font-size: 10.5px;
+  line-height: 1.7;
+  color: #8ba2aa;
+}
+
+.about-subhead {
+  margin: 20px 0 10px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(48, 112, 131, 0.14);
+  font-size: 13px;
+  color: #245563;
+}
+
+.checkbox-field {
+  align-content: start;
+}
+
+.inline-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 42px;
+  font-size: 12px;
+  color: #3d6471;
+}
+
+.inline-check input {
+  width: 17px;
+  height: 17px;
+}
+
+.honor-upload {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(244, 251, 252, 0.8);
+  border: 1px solid rgba(218, 238, 243, 0.9);
+}
+
+.honor-upload-preview {
+  height: 145px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 9px;
+  border: 1px dashed rgba(86, 161, 178, 0.35);
+  background: #f3fbfc;
+  color: #92aeb6;
+}
+
+.honor-upload-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.honor-upload-preview span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+}
+
+.honor-upload-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  gap: 7px;
+}
+
+.honor-upload-actions p {
+  flex-basis: 100%;
+  margin: 0;
+  max-width: 380px;
+  font-size: 9.5px;
+  line-height: 1.7;
+  color: #8fa6ad;
+}
+
+.honor-admin-row {
+  align-items: flex-start;
+}
+
+.honor-admin-thumb {
+  width: 96px;
+  height: 68px;
+  flex: none;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #f3fbfc;
+  border: 1px solid #e0eef2;
+}
+
+.honor-admin-placeholder {
+  width: 96px;
+  height: 68px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: #eef9f7;
+  color: #76aaa2;
+}
+
+@media (max-width: 620px) {
+  .visits-embed {
+    padding: 6px;
+  }
+  .visits-embed iframe {
+    height: 500px;
+  }
 }
 
 .admin-shell {
@@ -1804,12 +2212,15 @@ onMounted(() => {
     min-height: 44px;
     font-size: 16px;
   }
-  .upload-panel {
+  .upload-panel,
+  .honor-upload {
     grid-template-columns: minmax(0, 1fr);
   }
   .upload-preview,
-  .upload-preview img {
+  .upload-preview img,
+  .honor-upload-preview {
     min-height: 180px;
+    height: 180px;
   }
   .upload-actions .btn {
     width: 100%;

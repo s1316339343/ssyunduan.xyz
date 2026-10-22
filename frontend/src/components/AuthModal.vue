@@ -173,7 +173,6 @@ onUnmounted(() => {
                 {{ auth.loading ? '正在连接云端…' : isRegister ? '创建我的小窝账号' : '进入小窝' }}
               </button>
 
-              <p class="auth-demo">演示账号：<code>yunduan</code> / <code>yunduan123</code>（首次启动后端后可用）</p>
             </form>
 
             <p class="auth-switch">

@@ -15,7 +15,7 @@ const endpoints = {
   gallery: '/gallery',
   friends: '/friends',
   messages: '/messages',
-  changelog: '/changelog',
+  about: '/about',
   stats: '/stats',
 }
 

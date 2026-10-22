@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, watch } from 'vue'
 import { api } from './api/client'
+import { restoreSession } from './stores/auth'
 import { loadSite } from './stores/site'
 import { detectBackend, isStaticMode, STATIC_NOTICE } from './stores/runtime'
 import { notify } from './stores/toast'
@@ -22,6 +23,7 @@ watch(isStaticMode, (staticMode) => {
 })
 
 onMounted(async () => {
+  await restoreSession()
   await detectBackend()
   loadSite()
   startVisitorCounter()

@@ -4,7 +4,6 @@ import { useRoute, useRouter } from 'vue-router'
 import {
   BarChart3,
   BookOpen,
-  Clock3,
   Github,
   Heart,
   Home,
@@ -41,7 +40,6 @@ const nav = [
   { label: '随笔', to: '/moments', icon: PenLine, color: '#4f9fdb' },
   { label: '相册', to: '/gallery', icon: Images, color: '#c48b6a' },
   { label: '友链', to: '/friends', icon: Link2, color: '#de7d8e' },
-  { label: '日志', to: '/changelog', icon: Clock3, color: '#7b9ed6' },
   { label: '留言板', to: '/guestbook', icon: MessageCircle, color: '#3fbf9c' },
   { label: '关于我', to: '/about', icon: Heart, color: '#e58aa6' },
 ]
