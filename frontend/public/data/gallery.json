@@ -1,5 +1,59 @@
 [
   {
+    "id": 4,
+    "title": "通往图书馆的神奇小路",
+    "category": "风景",
+    "location": "沧州交通学院",
+    "takenAt": "2026-10-24",
+    "art": "mountain",
+    "imageUrl": "/uploads/de023d2a0e384bfeadfdbc1b38d050ca.jpg"
+  },
+  {
+    "id": 5,
+    "title": "神之infj——我的MBTI",
+    "category": "趣味",
+    "location": "梦想的彼岸",
+    "takenAt": "2026-10-24",
+    "art": "mountain",
+    "imageUrl": "/uploads/2a773c485580431db8fc33d6733d4d35.jpg"
+  },
+  {
+    "id": 6,
+    "title": "我记得这个应该是我25年时候的照片，当时还被工职大放在了获奖喜讯上",
+    "category": "自己",
+    "location": "河北工业职业技术大学（西柏坡校区）",
+    "takenAt": "2026-10-24",
+    "art": "mountain",
+    "imageUrl": "/uploads/41508339ad38435792063b05e33642e2.jpg"
+  },
+  {
+    "id": 7,
+    "title": "工职大西柏坡的晚霞",
+    "category": "风景",
+    "location": "河北工业职业技术大学（西柏坡校区）",
+    "takenAt": "2026-10-24",
+    "art": "mountain",
+    "imageUrl": "/uploads/3eb165411f5c43f295a09811ea178eb8.jpg"
+  },
+  {
+    "id": 8,
+    "title": "工职大西柏坡的湖",
+    "category": "风景",
+    "location": "河北工业职业技术大学（西柏坡校区）",
+    "takenAt": "2026-10-24",
+    "art": "mountain",
+    "imageUrl": "/uploads/919558ec40054308b3f40eeed88020cf.jpg"
+  },
+  {
+    "id": 9,
+    "title": "高空酒店酒间悟道",
+    "category": "风景",
+    "location": "石家庄·西美花街",
+    "takenAt": "2026-10-24",
+    "art": "mountain",
+    "imageUrl": "/uploads/769947e351b54605b1cb57946258656a.jpg"
+  },
+  {
     "id": 2,
     "title": "天冷了，秋来了",
     "category": "风景",
