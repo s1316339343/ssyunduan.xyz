@@ -24,13 +24,23 @@
   },
   "honors": [
     {
+      "id": 7,
+      "title": "2026年华北五省（市、自治区）及港澳台大学生计算机应用大赛入围获奖",
+      "issuer": "",
+      "awardedAt": "2026-10-26",
+      "imageUrl": "",
+      "description": "2026年华北五省（市、自治区）及港澳台大学生计算机应用大赛入围获奖",
+      "priority": 100,
+      "visible": true
+    },
+    {
       "id": 4,
       "title": "第 16 届蓝桥杯 Web 应用开发河北省赛二等奖",
       "issuer": "工业和信息化部人才交流中心 / 蓝桥杯大赛组委会",
       "awardedAt": "2025-05-26",
       "imageUrl": "/honors/lanqiao.jpg",
       "description": "全国软件和信息技术专业人才大赛河北赛区 Web 应用开发职业院校组二等奖。",
-      "priority": 100,
+      "priority": 91,
       "visible": true
     },
     {
