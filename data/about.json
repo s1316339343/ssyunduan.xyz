@@ -1,0 +1,97 @@
+{
+  "profile": {
+    "id": 1,
+    "name": "宋爽",
+    "nickname": "云端",
+    "birthDate": "2003-10-14",
+    "hometown": "河北唐山",
+    "phone": "18731513039",
+    "email": "1316339343@qq.com",
+    "status": "沧州交通学院 · 物联网工程 · 本科在读",
+    "intro": "本人为沧州交通学院物联网工程专业本科在读生，具备专升本学习背景，学习目标清晰、执行力强，长期规划以人工智能方向深造为核心，对智能体、大模型上层应用领域抱有浓厚热情。在校期间主动夯实计算机基础，备考计算机二级、四级以及 408 相关课程；积极参与学科竞赛，曾获蓝桥杯省赛二等奖，同时自主开展项目实践，先后独立开发鸿蒙美食推荐应用、校园论坛、个人静态博客，尝试本地大模型部署，擅长结合 AI 能力落地实用应用，偏向智能应用开发。学习上擅长复盘总结，有较强应试能力与自主钻研习惯，能够主动跟进 AI 相关新技术；未来希望深耕人工智能、智能体应用赛道，持续把想法转化为可运行的产品。",
+    "goal": "深耕人工智能与智能体应用，把想法持续转化为可运行的产品。",
+    "collegeSchool": "河北工业职业技术大学",
+    "collegeMajor": "移动应用开发",
+    "collegePeriod": "2023.09 - 2026.06",
+    "collegeCourses": "Vue、HTML、CSS、JavaScript、Web 前端开发、小程序开发",
+    "collegeExperience": "参加校园内部前端实战班，重点学习前端知识，提升项目实战经验；在班级里学习成绩优异，实训项目完成度优秀。",
+    "bachelorSchool": "沧州交通学院",
+    "bachelorMajor": "物联网工程",
+    "bachelorPeriod": "2026.09 - 至今",
+    "bachelorCourses": "主修课程与校内经历暂无",
+    "bachelorExperience": "本科在读，正在继续补充物联网工程与人工智能相关基础。",
+    "skills": "Vue 3、TypeScript、Spring Boot、鸿蒙应用开发、AI 应用实践、项目复盘"
+  },
+  "honors": [
+    {
+      "id": 7,
+      "title": "2026年华北五省（市、自治区）及港澳台大学生计算机应用大赛二等奖",
+      "issuer": "沧州交通学院",
+      "awardedAt": "2026-10-26",
+      "imageUrl": "/uploads/63ad2a48b03a4984a7f3a1fcfb8cc8ae.jpg",
+      "description": "2026年华北五省（市、自治区）及港澳台大学生计算机应用大赛省级二等奖",
+      "priority": 100,
+      "visible": true
+    },
+    {
+      "id": 4,
+      "title": "第 16 届蓝桥杯 Web 应用开发河北省赛二等奖",
+      "issuer": "工业和信息化部人才交流中心 / 蓝桥杯大赛组委会",
+      "awardedAt": "2025-05-26",
+      "imageUrl": "/honors/lanqiao.jpg",
+      "description": "全国软件和信息技术专业人才大赛河北赛区 Web 应用开发职业院校组二等奖。",
+      "priority": 91,
+      "visible": true
+    },
+    {
+      "id": 5,
+      "title": "2024 年百度商业 AI 技术创新大赛北部赛区二等奖",
+      "issuer": "中国人工智能学会 / 百度商业 / NVIDIA / 飞桨",
+      "awardedAt": "2024-08-29",
+      "imageUrl": "/honors/baidu.jpg",
+      "description": "行业智能体搭建赛道，所在团队「慢走不宋先生队」获北部赛区二等奖。",
+      "priority": 90,
+      "visible": true
+    },
+    {
+      "id": 6,
+      "title": "文心智能体 DeepSeek 挑战赛一等奖",
+      "issuer": "文心智能体",
+      "awardedAt": "2025",
+      "imageUrl": "",
+      "description": "DeepSeek 挑战赛一等奖（暂无证书图片）。",
+      "priority": 50,
+      "visible": true
+    },
+    {
+      "id": 1,
+      "title": "华为开发者学堂专业证书",
+      "issuer": "华为开发者联盟",
+      "awardedAt": "2024-02-27",
+      "imageUrl": "/honors/huawei.jpg",
+      "description": "HarmonyOS 应用开发者基础认证。",
+      "priority": 10,
+      "visible": true
+    },
+    {
+      "id": 2,
+      "title": "阿里云 Apsara Clouder 专项技能认证",
+      "issuer": "阿里云",
+      "awardedAt": "2024-06-17",
+      "imageUrl": "/honors/aliyun.jpg",
+      "description": "云数据库 Clouder 认证：云数据库 RDS 快速入门。",
+      "priority": 10,
+      "visible": true
+    },
+    {
+      "id": 3,
+      "title": "AI 驱动的 TDSQL-C Serverless 数据库技术实战营结业证书",
+      "issuer": "腾讯云开发者社区 / 腾讯云数据库 / CSDN",
+      "awardedAt": "2024-02-27",
+      "imageUrl": "/honors/tdsql.jpg",
+      "description": "完成 AI 驱动的 TDSQL-C Serverless 数据库技术实战营。",
+      "priority": 10,
+      "visible": true
+    }
+  ]
+}
