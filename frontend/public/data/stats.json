@@ -4,27 +4,12 @@
   "categories": 7,
   "words": 21105,
   "todayVisits": 1,
-  "monthVisits": 12,
-  "totalVisits": 12,
+  "monthVisits": 13,
+  "totalVisits": 13,
   "todayViews": 1,
-  "monthViews": 21,
-  "totalViews": 21,
+  "monthViews": 22,
+  "totalViews": 22,
   "visitTrend": [
-    {
-      "date": "2026-09-27",
-      "pv": 0,
-      "uv": 0
-    },
-    {
-      "date": "2026-09-28",
-      "pv": 0,
-      "uv": 0
-    },
-    {
-      "date": "2026-09-29",
-      "pv": 0,
-      "uv": 0
-    },
     {
       "date": "2026-09-30",
       "pv": 0,
@@ -157,6 +142,21 @@
     },
     {
       "date": "2026-10-26",
+      "pv": 1,
+      "uv": 1
+    },
+    {
+      "date": "2026-10-27",
+      "pv": 0,
+      "uv": 0
+    },
+    {
+      "date": "2026-10-28",
+      "pv": 0,
+      "uv": 0
+    },
+    {
+      "date": "2026-10-29",
       "pv": 1,
       "uv": 1
     }
