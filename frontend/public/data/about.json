@@ -24,16 +24,6 @@
   },
   "honors": [
     {
-      "id": 7,
-      "title": "2026年华北五省（市、自治区）及港澳台大学生计算机应用大赛二等奖",
-      "issuer": "沧州交通学院",
-      "awardedAt": "2026-10-26",
-      "imageUrl": "/uploads/63ad2a48b03a4984a7f3a1fcfb8cc8ae.jpg",
-      "description": "2026年华北五省（市、自治区）及港澳台大学生计算机应用大赛省级二等奖",
-      "priority": 100,
-      "visible": true
-    },
-    {
       "id": 4,
       "title": "第 16 届蓝桥杯 Web 应用开发河北省赛二等奖",
       "issuer": "工业和信息化部人才交流中心 / 蓝桥杯大赛组委会",
@@ -54,6 +44,26 @@
       "visible": true
     },
     {
+      "id": 7,
+      "title": "2026年华北五省（市、自治区）及港澳台大学生计算机应用大赛二等奖",
+      "issuer": "沧州交通学院",
+      "awardedAt": "2026-10-26",
+      "imageUrl": "/uploads/63ad2a48b03a4984a7f3a1fcfb8cc8ae.jpg",
+      "description": "2026年华北五省（市、自治区）及港澳台大学生计算机应用大赛省级二等奖",
+      "priority": 89,
+      "visible": true
+    },
+    {
+      "id": 1,
+      "title": "华为开发者学堂专业证书",
+      "issuer": "华为开发者联盟",
+      "awardedAt": "2026-11-02",
+      "imageUrl": "/uploads/2c8f2b48935c46ceabf629d05d026fed.jpg",
+      "description": "HarmonyOS 应用开发者基础认证。",
+      "priority": 88,
+      "visible": true
+    },
+    {
       "id": 6,
       "title": "文心智能体 DeepSeek 挑战赛一等奖",
       "issuer": "文心智能体",
@@ -61,16 +71,6 @@
       "imageUrl": "",
       "description": "DeepSeek 挑战赛一等奖（暂无证书图片）。",
       "priority": 50,
-      "visible": true
-    },
-    {
-      "id": 1,
-      "title": "华为开发者学堂专业证书",
-      "issuer": "华为开发者联盟",
-      "awardedAt": "2024-02-27",
-      "imageUrl": "/honors/huawei.jpg",
-      "description": "HarmonyOS 应用开发者基础认证。",
-      "priority": 10,
       "visible": true
     },
     {
