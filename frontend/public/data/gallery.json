@@ -1,5 +1,14 @@
 [
   {
+    "id": 10,
+    "title": "湖边长椅随拍",
+    "category": "风景",
+    "location": "沧州交通学院",
+    "takenAt": "2026-11-01",
+    "art": "mountain",
+    "imageUrl": "/uploads/c6004ad0959f47109a4c4cc4831226b3.jpg"
+  },
+  {
     "id": 4,
     "title": "通往图书馆的神奇小路",
     "category": "风景",
