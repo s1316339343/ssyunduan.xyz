@@ -3,18 +3,13 @@
   "tags": 38,
   "categories": 5,
   "words": 37349,
-  "todayVisits": 1,
+  "todayVisits": 0,
   "monthVisits": 5,
   "totalVisits": 18,
-  "todayViews": 3,
+  "todayViews": 0,
   "monthViews": 8,
   "totalViews": 30,
   "visitTrend": [
-    {
-      "date": "2026-10-16",
-      "pv": 0,
-      "uv": 0
-    },
     {
       "date": "2026-10-17",
       "pv": 0,
@@ -159,6 +154,11 @@
       "date": "2026-11-14",
       "pv": 3,
       "uv": 1
+    },
+    {
+      "date": "2026-11-15",
+      "pv": 0,
+      "uv": 0
     }
   ],
   "monthlyArticles": [
