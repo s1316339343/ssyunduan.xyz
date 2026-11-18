@@ -2,24 +2,14 @@
   "articles": 11,
   "tags": 41,
   "categories": 3,
-  "words": 35763,
+  "words": 38386,
   "todayVisits": 1,
-  "monthVisits": 6,
-  "totalVisits": 19,
+  "monthVisits": 7,
+  "totalVisits": 20,
   "todayViews": 1,
-  "monthViews": 9,
-  "totalViews": 31,
+  "monthViews": 10,
+  "totalViews": 32,
   "visitTrend": [
-    {
-      "date": "2026-10-18",
-      "pv": 0,
-      "uv": 0
-    },
-    {
-      "date": "2026-10-19",
-      "pv": 2,
-      "uv": 2
-    },
     {
       "date": "2026-10-20",
       "pv": 2,
@@ -157,6 +147,16 @@
     },
     {
       "date": "2026-11-16",
+      "pv": 1,
+      "uv": 1
+    },
+    {
+      "date": "2026-11-17",
+      "pv": 0,
+      "uv": 0
+    },
+    {
+      "date": "2026-11-18",
       "pv": 1,
       "uv": 1
     }
