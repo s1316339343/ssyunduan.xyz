@@ -1,0 +1,40 @@
+{
+  "name": "云端の小窝",
+  "title": "把日子过成诗，把代码写成歌",
+  "englishTitle": "YUNDUAN NEST",
+  "author": "宋爽",
+  "nickname": "云端",
+  "avatar": "",
+  "tagline": "在云端，记录人间的烟火。",
+  "bio": "宋爽，网名云端。一个在代码与文字之间来回散步的人。",
+  "domain": "yunduan.xyz",
+  "email": "hello@yunduan.xyz",
+  "github": "https://github.com/yunduan",
+  "location": "中国",
+  "startDate": "2026-08-01",
+  "icp": "备案号待填写",
+  "police": "公网安备待填写",
+  "techStack": [
+    "Vue 3",
+    "TypeScript",
+    "Spring Boot",
+    "H2"
+  ],
+  "socials": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/yunduan",
+      "icon": "github"
+    },
+    {
+      "label": "邮箱",
+      "url": "mailto:hello@yunduan.xyz",
+      "icon": "mail"
+    },
+    {
+      "label": "留言板",
+      "url": "/guestbook",
+      "icon": "message"
+    }
+  ]
+}
