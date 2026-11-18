@@ -125,6 +125,27 @@
         showCached('site-pv', pvTarget)
         showCached('site-uv', uvTarget)
 
+        // Abacus 偶发 500 时，先用最近一次导出快照兜底。
+        fetch('data/visits.json?t=' + Date.now(), { cache: 'no-store' })
+          .then(function (response) {
+            return response.ok ? response.json() : null
+          })
+          .then(function (snapshot) {
+            if (!snapshot) return
+            if (cached['site-pv'] == null && snapshot.pv != null) {
+              cached['site-pv'] = snapshot.pv
+              pvTarget.textContent = String(snapshot.pv)
+            }
+            if (cached['site-uv'] == null && snapshot.uv != null) {
+              cached['site-uv'] = snapshot.uv
+              uvTarget.textContent = String(snapshot.uv)
+            }
+            saveCache()
+          })
+          .catch(function () {
+            /* 没有快照时继续等待实时接口 */
+          })
+
         function load(key, target, attempt) {
           var tries = attempt || 0
           var callback = '__yunduan_widget_' + Date.now() + '_' + (++seq)
