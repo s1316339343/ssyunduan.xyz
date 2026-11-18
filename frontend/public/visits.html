@@ -98,33 +98,74 @@
     <script>
       ;(function () {
         var namespace = 'ssyunduan-xyz'
+        var cacheKey = 'yunduan.visits.cache'
         var seq = 0
-        function load(key, target) {
+        var cached = {}
+        try {
+          cached = JSON.parse(localStorage.getItem(cacheKey) || '{}') || {}
+        } catch (e) {
+          cached = {}
+        }
+
+        var pvTarget = document.getElementById('site_pv')
+        var uvTarget = document.getElementById('site_uv')
+
+        function showCached(key, target) {
+          if (cached[key] != null) target.textContent = String(cached[key])
+        }
+
+        function saveCache() {
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(cached))
+          } catch (e) {
+            /* 隐私模式下只保留当前页面数据 */
+          }
+        }
+
+        showCached('site-pv', pvTarget)
+        showCached('site-uv', uvTarget)
+
+        function load(key, target, attempt) {
+          var tries = attempt || 0
           var callback = '__yunduan_widget_' + Date.now() + '_' + (++seq)
           var script = document.createElement('script')
-          var timer = setTimeout(function () {
-            cleanup()
-            target.textContent = '—'
-          }, 8000)
+          var timer = setTimeout(fail, 7000)
+
           function cleanup() {
             clearTimeout(timer)
             delete window[callback]
             if (script.parentNode) script.parentNode.removeChild(script)
           }
+
+          function fail() {
+            cleanup()
+            if (tries < 3) {
+              setTimeout(function () {
+                load(key, target, tries + 1)
+              }, 500 * (tries + 1))
+            } else if (cached[key] == null) {
+              target.textContent = '—'
+            }
+          }
+
           window[callback] = function (data) {
             cleanup()
-            target.textContent = data && data.value != null ? String(data.value) : '—'
+            if (data && data.value != null) {
+              target.textContent = String(data.value)
+              cached[key] = data.value
+              saveCache()
+            } else {
+              fail()
+            }
           }
-          script.onerror = function () {
-            cleanup()
-            target.textContent = '—'
-          }
+          script.onerror = fail
           script.src = 'https://abacus.jasoncameron.dev/get/' + namespace + '/' + key + '?callback=' + callback
           script.async = true
           document.head.appendChild(script)
         }
-        load('site-pv', document.getElementById('site_pv'))
-        load('site-uv', document.getElementById('site_uv'))
+
+        load('site-pv', pvTarget)
+        load('site-uv', uvTarget)
       })()
     </script>
   </body>

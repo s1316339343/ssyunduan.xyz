@@ -22,6 +22,13 @@ const router = createRouter({
     { path: '/guestbook', name: 'guestbook', component: () => import('../views/GuestbookView.vue'), meta: { title: '留言板' } },
     { path: '/about', name: 'about', component: () => import('../views/AboutView.vue'), meta: { title: '关于我' } },
     {
+      path: '/visits',
+      alias: '/visits/',
+      name: 'visits',
+      component: () => import('../views/VisitsRedirectView.vue'),
+      meta: { title: '访问统计' },
+    },
+    {
       path: '/admin',
       name: 'admin',
       component: () => import('../views/AdminView.vue'),
